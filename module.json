@@ -1,7 +1,7 @@
 {
   "id": "mezz-comp",
   "title": "Mezz's Comp",
-  "version": "1.0.0",
+  "version": "__VERSION__",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
@@ -185,20 +185,20 @@
       "name": "Mezz's Compendiums",
       "sorting": "a",
       "color": "#1875cf",
-	  "folders":[
+      "folders": [
         {
-		  "name": "Character",
-		  "sorting": "a",
-		  "color": "#1875cf",
-		  "packs": [
+          "name": "Character",
+          "sorting": "a",
+          "color": "#1875cf",
+          "packs": [
             "classes",
-    		"classfeatures",
-			"backgrounds",
-			"races",
-			"feats"
+            "classfeatures",
+            "backgrounds",
+            "races",
+            "feats"
           ]
-		},
-		{
+        },
+        {
           "name": "Items & Spells",
           "sorting": "a",
           "color": "#1875cf",
@@ -215,19 +215,18 @@
             "beastiary",
             "monsterfeatures"
           ]
-        },
-	  ],
-	  "packs": [
-    	"books",
-		"maps",
-		"tables",
-		"macros",
-		"rules"
-	  ]
-	}
+        }
+      ],
+      "packs": [
+        "books",
+        "maps",
+        "tables",
+        "macros",
+        "rules"
+      ]
+    }
   ],
   "url": "https://github.com/Mezzarius/mezz-comp",
-  "manifest": "https://github.com/Mezzarius/mezz-comp/releases/latest/download/module.json",
-  "download": "https://github.com/Mezzarius/mezz-comp/releases/download/${{ github.event.release.tag_name }}/module.zip",
-
+  "manifest": "__MANIFEST_URL__",
+  "download": "__DOWNLOAD_URL__"
 }
