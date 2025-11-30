@@ -22,7 +22,7 @@
     "scripts/level-up.mjs"
   ],
   "styles": [
-    "styles.css"
+    "styles/styles.css"
   ],
   "packs": [
     {
