@@ -42,6 +42,15 @@ jobs:
           done
           zip -r ./module.zip "${files[@]}"
 
+      - name: Verify GITHUB_TOKEN is available
+        run: |
+          if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+            echo "GITHUB_TOKEN is missing — release-action will fail without a token."
+            exit 1
+          else
+            echo "GITHUB_TOKEN is present."
+          fi
+
       - name: Update Release with Files
         id: create_version_release
         uses: ncipollo/release-action@v1
