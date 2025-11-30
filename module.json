@@ -229,17 +229,6 @@
             "monsterfeatures"
           ]
         }
-<<<<<<< HEAD
-	  ],
-	  "packs": [
-    	"books",
-		"maps",
-		"tables",
-		"macros",
-		"rules"
-	  ]
-	}
-=======
       ],
       "packs": [
         "books",
@@ -249,7 +238,6 @@
         "rules"
       ]
     }
->>>>>>> 587b8d4709bb26e4e8639a4b3bf8369dff953cb2
   ],
   "url": "https://github.com/Mezzarius/mezz-comp",
   "manifest": "__MANIFEST_URL__",
