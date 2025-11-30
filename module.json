@@ -1,7 +1,7 @@
 {
   "id": "mezz-comp",
   "title": "Mezz's Comp",
-  "version": "1.0.0",
+  "version": "__VERSION__",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
@@ -31,6 +31,7 @@
       "path": "packs/books",
       "type": "JournalEntry",
       "module": "mezz-comp",
+      "system": "dnd5e",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
@@ -42,7 +43,8 @@
       "path": "packs/backgrounds",
       "type": "Item",
       "module": "mezz-comp",
-      "ownership": {
+      "system": "dnd5e",
+       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -53,7 +55,8 @@
       "path": "packs/beastiary",
       "type": "Actor",
       "module": "mezz-comp",
-      "ownership": {
+      "system": "dnd5e",
+       "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       }
@@ -63,7 +66,8 @@
       "label": "Classes",
       "path": "packs/classes",
       "type": "Item",
-      "module": "mezz-comp",
+      "system": "dnd5e",
+       "module": "mezz-comp",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
@@ -75,7 +79,8 @@
       "path": "packs/races",
       "type": "Item",
       "module": "mezz-comp",
-      "ownership": {
+      "system": "dnd5e",
+       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -86,7 +91,8 @@
       "path": "packs/feats",
       "type": "Item",
       "module": "mezz-comp",
-      "ownership": {
+      "system": "dnd5e",
+       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -97,7 +103,8 @@
       "path": "packs/spells",
       "type": "Item",
       "module": "mezz-comp",
-      "ownership": {
+      "system": "dnd5e",
+       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -119,7 +126,8 @@
       "path": "packs/classfeatures",
       "type": "Item",
       "module": "mezz-comp",
-      "ownership": {
+      "system": "dnd5e",
+       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -130,7 +138,8 @@
       "path": "packs/monsterfeatures",
       "type": "Item",
       "module": "mezz-comp",
-      "ownership": {
+      "system": "dnd5e",
+       "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       }
@@ -141,7 +150,8 @@
       "path": "packs/rules",
       "type": "JournalEntry",
       "module": "mezz-comp",
-      "ownership": {
+      "system": "dnd5e",
+       "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       }
@@ -151,7 +161,8 @@
       "label": "Tables",
       "path": "packs/tables",
       "type": "RollTable",
-      "module": "mezz-comp",
+      "system": "dnd5e",
+       "module": "mezz-comp",
       "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
@@ -163,7 +174,8 @@
       "path": "packs/maps",
       "type": "Scene",
       "module": "mezz-comp",
-      "ownership": {
+      "system": "dnd5e",
+       "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       }
@@ -174,7 +186,8 @@
       "path": "packs/macros",
       "type": "Macro",
       "module": "mezz-comp",
-      "ownership": {
+      "system": "dnd5e",
+       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -185,20 +198,20 @@
       "name": "Mezz's Compendiums",
       "sorting": "a",
       "color": "#1875cf",
-	  "folders":[
+      "folders": [
         {
-		  "name": "Character",
-		  "sorting": "a",
-		  "color": "#1875cf",
-		  "packs": [
+          "name": "Character",
+          "sorting": "a",
+          "color": "#1875cf",
+          "packs": [
             "classes",
-    		"classfeatures",
-			"backgrounds",
-			"races",
-			"feats"
+            "classfeatures",
+            "backgrounds",
+            "races",
+            "feats"
           ]
-		},
-		{
+        },
+        {
           "name": "Items & Spells",
           "sorting": "a",
           "color": "#1875cf",
@@ -216,6 +229,7 @@
             "monsterfeatures"
           ]
         }
+<<<<<<< HEAD
 	  ],
 	  "packs": [
     	"books",
@@ -225,6 +239,19 @@
 		"rules"
 	  ]
 	}
+=======
+      ],
+      "packs": [
+        "books",
+        "maps",
+        "tables",
+        "macros",
+        "rules"
+      ]
+    }
+>>>>>>> 587b8d4709bb26e4e8639a4b3bf8369dff953cb2
   ],
-  "description": ""
+  "url": "https://github.com/Mezzarius/mezz-comp",
+  "manifest": "__MANIFEST_URL__",
+  "download": "__DOWNLOAD_URL__"
 }

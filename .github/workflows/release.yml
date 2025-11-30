@@ -1,0 +1,70 @@
+name: Create Module Files For GitHub Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Extract tag and compute URLs
+        id: get_version
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          VERSION="${TAG#v}"
+          MANIFEST="https://github.com/${{ github.repository }}/releases/latest/download/module.json"
+          DOWNLOAD="https://github.com/${{ github.repository }}/releases/download/${TAG}/module.zip"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "manifest=$MANIFEST" >> "$GITHUB_OUTPUT"
+          echo "download=$DOWNLOAD" >> "$GITHUB_OUTPUT"
+
+      - name: Populate module.json fields (version, manifest, download)
+        run: |
+          set -euo pipefail
+          # backup original
+          cp module.json module.json.bak
+          jq --arg v "${{ steps.get_version.outputs.version }}" \
+             --arg m "${{ steps.get_version.outputs.manifest }}" \
+             --arg d "${{ steps.get_version.outputs.download }}" \
+             '.version = $v | .manifest = $m | .download = $d' \
+             module.json > module.json.tmp
+          mv module.json.tmp module.json
+          echo "module.json updated:"
+          jq . module.json
+
+      - name: Create module.zip containing existing files
+        run: |
+          set -euo pipefail
+          files=(module.json README.md LICENSE)
+          for d in styles scripts assets languages media packs; do
+            [ -e "$d" ] && files+=("$d")
+          done
+          zip -r ./module.zip "${files[@]}"
+
+      - name: Verify GITHUB_TOKEN is available
+        run: |
+          if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+            echo "GITHUB_TOKEN is missing — release-action will fail without a token."
+            exit 1
+          else
+            echo "GITHUB_TOKEN is present."
+          fi
+
+      - name: Update Release with Files
+        id: create_version_release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          name: ${{ github.event.release.name }}
+          draft: ${{ github.event.release.draft }}
+          prerelease: ${{ github.event.release.prerelease }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: './module.json, ./module.zip'
+          tag: ${{ github.event.release.tag_name }}
+          body: ${{ github.event.release.body }}
