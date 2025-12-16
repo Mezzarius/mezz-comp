@@ -1,7 +1,7 @@
 {
   "id": "mezz-comp",
   "title": "Mezz's Comp",
-  "version": "__VERSION__",
+  "version": "1.0.6",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
@@ -18,9 +18,11 @@
     "canUpload": true
   },
   "scripts": [
-    "scripts/inventory-logic.mjs",
-    "scripts/level-up.mjs"
-  ],
+    "scripts/dsn-fix.js",
+	"scripts/inventory-logic.js",
+	"scripts/level-up.js",
+	"scripts/projectile-tracker.js"
+	],
   "styles": [
     "styles/styles.css"
   ],
@@ -44,7 +46,7 @@
       "type": "Item",
       "module": "mezz-comp",
       "system": "dnd5e",
-       "ownership": {
+      "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -56,7 +58,7 @@
       "type": "Actor",
       "module": "mezz-comp",
       "system": "dnd5e",
-       "ownership": {
+      "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       }
@@ -67,7 +69,7 @@
       "path": "packs/classes",
       "type": "Item",
       "system": "dnd5e",
-       "module": "mezz-comp",
+      "module": "mezz-comp",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
@@ -80,7 +82,7 @@
       "type": "Item",
       "module": "mezz-comp",
       "system": "dnd5e",
-       "ownership": {
+      "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -92,7 +94,7 @@
       "type": "Item",
       "module": "mezz-comp",
       "system": "dnd5e",
-       "ownership": {
+      "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -104,7 +106,7 @@
       "type": "Item",
       "module": "mezz-comp",
       "system": "dnd5e",
-       "ownership": {
+      "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -127,7 +129,7 @@
       "type": "Item",
       "module": "mezz-comp",
       "system": "dnd5e",
-       "ownership": {
+      "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -139,7 +141,7 @@
       "type": "Item",
       "module": "mezz-comp",
       "system": "dnd5e",
-       "ownership": {
+      "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       }
@@ -151,7 +153,7 @@
       "type": "JournalEntry",
       "module": "mezz-comp",
       "system": "dnd5e",
-       "ownership": {
+      "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       }
@@ -162,7 +164,7 @@
       "path": "packs/tables",
       "type": "RollTable",
       "system": "dnd5e",
-       "module": "mezz-comp",
+      "module": "mezz-comp",
       "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
@@ -175,7 +177,7 @@
       "type": "Scene",
       "module": "mezz-comp",
       "system": "dnd5e",
-       "ownership": {
+      "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       }
@@ -187,7 +189,7 @@
       "type": "Macro",
       "module": "mezz-comp",
       "system": "dnd5e",
-       "ownership": {
+      "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
@@ -240,6 +242,6 @@
     }
   ],
   "url": "https://github.com/Mezzarius/mezz-comp",
-  "manifest": "__MANIFEST_URL__",
-  "download": "__DOWNLOAD_URL__"
+  "manifest": "https://github.com/Mezzarius/mezz-comp/releases/latest/download/module.json",
+  "download": "https://github.com/Mezzarius/mezz-comp/releases/download/1.0.6/module.zip"
 }
