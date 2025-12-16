@@ -1,0 +1,247 @@
+{
+  "id": "mezz-comp",
+  "title": "Mezz's Comp",
+  "version": "1.0.6",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "authors": [
+    {
+      "name": "Mezzarius",
+      "email": "mezzarius@hotmail.com",
+      "discord": "Mezzarius",
+      "flags": {}
+    }
+  ],
+  "flags": {
+    "canUpload": true
+  },
+  "scripts": [
+    "scripts/dsn-fix.js",
+	"scripts/inventory-logic.js",
+	"scripts/level-up.js",
+	"scripts/projectile-tracker.js"
+	],
+  "styles": [
+    "styles/styles.css"
+  ],
+  "packs": [
+    {
+      "name": "books",
+      "label": "Books",
+      "path": "packs/books",
+      "type": "JournalEntry",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "backgrounds",
+      "label": "Backgrounds",
+      "path": "packs/backgrounds",
+      "type": "Item",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "beastiary",
+      "label": "Beastiary",
+      "path": "packs/beastiary",
+      "type": "Actor",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "classes",
+      "label": "Classes",
+      "path": "packs/classes",
+      "type": "Item",
+      "system": "dnd5e",
+      "module": "mezz-comp",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "races",
+      "label": "Races",
+      "path": "packs/races",
+      "type": "Item",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "feats",
+      "label": "Feats",
+      "path": "packs/feats",
+      "type": "Item",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "spells",
+      "label": "Spells",
+      "path": "packs/spells",
+      "type": "Item",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "items",
+      "label": "Items",
+      "path": "packs/items",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "classfeatures",
+      "label": "Class Features",
+      "path": "packs/classfeatures",
+      "type": "Item",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "monsterfeatures",
+      "label": "Monster Features",
+      "path": "packs/monsterfeatures",
+      "type": "Item",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "rules",
+      "label": "Rules",
+      "path": "packs/rules",
+      "type": "JournalEntry",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "tables",
+      "label": "Tables",
+      "path": "packs/tables",
+      "type": "RollTable",
+      "system": "dnd5e",
+      "module": "mezz-comp",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "maps",
+      "label": "Maps",
+      "path": "packs/maps",
+      "type": "Scene",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "macros",
+      "label": "Macros",
+      "path": "packs/macros",
+      "type": "Macro",
+      "module": "mezz-comp",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Mezz's Compendiums",
+      "sorting": "a",
+      "color": "#1875cf",
+      "folders": [
+        {
+          "name": "Character",
+          "sorting": "a",
+          "color": "#1875cf",
+          "packs": [
+            "classes",
+            "classfeatures",
+            "backgrounds",
+            "races",
+            "feats"
+          ]
+        },
+        {
+          "name": "Items & Spells",
+          "sorting": "a",
+          "color": "#1875cf",
+          "packs": [
+            "items",
+            "spells"
+          ]
+        },
+        {
+          "name": "Monsters",
+          "sorting": "a",
+          "color": "#1875cf",
+          "packs": [
+            "beastiary",
+            "monsterfeatures"
+          ]
+        }
+      ],
+      "packs": [
+        "books",
+        "maps",
+        "tables",
+        "macros",
+        "rules"
+      ]
+    }
+  ],
+  "url": "https://github.com/Mezzarius/mezz-comp",
+  "manifest": "https://github.com/Mezzarius/mezz-comp/releases/latest/download/module.json",
+  "download": "https://github.com/Mezzarius/mezz-comp/releases/download/1.0.6/module.zip"
+}
