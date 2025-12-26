@@ -49,8 +49,8 @@ Hooks.on("renderActorSheetV2", (app, html) => {
   const type = event.currentTarget.dataset.itemType;
   if (["class","race","background"].includes(type)) {
     unlock(actor);
-  }
-});
+    }
+  });
   
   const canLevel = isLevelUp(actor);
   if (!canLevel) return;
@@ -85,8 +85,8 @@ Hooks.on("renderActorSheetV2", (app, html) => {
   `);
 
   $btn.on("click", ev => {
-//    ev.preventDefault();
-//    ev.stopPropagation();
+    ev.preventDefault();
+    ev.stopPropagation();
 //	unlock(actor);
     mezzLevelUp(actor);
   });
@@ -121,7 +121,7 @@ async function mezzLevelUp(actor) {
     const mgr = AdvMgr.forLevelChange(actor, cls.id, +1);
 
     if (mgr?.steps?.length > 0) {
-      log("Opening official Advancement UI");
+      console.log("Opening official Advancement UI");
       mgr.render({ force: true });
       return;
     }
@@ -130,9 +130,9 @@ async function mezzLevelUp(actor) {
   }
 
   // FALLBACK: manual level bump
-  log("No advancement steps → manually increasing class level.");
+  console.log("No advancement steps → manually increasing class level.");
   await cls.update({ "system.levels": cls.system.levels + 1 });
 
   ui.notifications.info(`Level increased: ${cls.name} ${cls.system.levels + 1}`);
-  lock(actor);
+//  lock(actor);
 }
