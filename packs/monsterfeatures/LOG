@@ -1,8 +1,3 @@
-2025/12/26-04:18:08.457338 7f57257be6c0 Recovering log #609
-2025/12/26-04:18:08.461441 7f57257be6c0 Delete type=3 #608
-2025/12/26-04:18:08.461485 7f57257be6c0 Delete type=0 #609
-2025/12/26-20:04:57.335973 7f54837ff6c0 Level-0 table #613: started
-2025/12/26-20:04:57.336222 7f54837ff6c0 Level-0 table #613: 0 bytes OK
-2025/12/26-20:04:57.338789 7f54837ff6c0 Delete type=0 #611
-2025/12/26-20:04:57.342104 7f54837ff6c0 Manual compaction at level-0 from '!folders!4T18pEvubPMQLzvD' @ 72057594037927935 : 1 .. '!items.effects!mmWorldshakingMo.ERWPInrx4mXsqrwL' @ 0 : 0; will stop at (end)
-2025/12/26-20:04:57.342182 7f54837ff6c0 Manual compaction at level-1 from '!folders!4T18pEvubPMQLzvD' @ 72057594037927935 : 1 .. '!items.effects!mmWorldshakingMo.ERWPInrx4mXsqrwL' @ 0 : 0; will stop at (end)
+2025/12/29-20:02:16.947449 7f5724fbd6c0 Recovering log #632
+2025/12/29-20:02:16.956408 7f5724fbd6c0 Delete type=0 #632
+2025/12/29-20:02:16.956464 7f5724fbd6c0 Delete type=3 #630

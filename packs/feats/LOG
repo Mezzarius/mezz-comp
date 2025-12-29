@@ -1,7 +1,3 @@
-2025/12/26-04:18:08.387984 7f5724fbd6c0 Recovering log #622
-2025/12/26-04:18:08.392472 7f5724fbd6c0 Delete type=0 #622
-2025/12/26-04:18:08.392532 7f5724fbd6c0 Delete type=3 #621
-2025/12/26-20:04:57.291427 7f54837ff6c0 Level-0 table #626: started
-2025/12/26-20:04:57.291824 7f54837ff6c0 Level-0 table #626: 0 bytes OK
-2025/12/26-20:04:57.293738 7f54837ff6c0 Delete type=0 #624
-2025/12/26-20:04:57.296587 7f54837ff6c0 Manual compaction at level-0 from '!folders!O942K0m1gZMIIoMB' @ 72057594037927935 : 1 .. '!items.effects!zGVnlsqO71XMFoky.protection000000' @ 0 : 0; will stop at (end)
+2025/12/29-20:02:16.860237 7f5725fbf6c0 Recovering log #648
+2025/12/29-20:02:16.866551 7f5725fbf6c0 Delete type=3 #646
+2025/12/29-20:02:16.866628 7f5725fbf6c0 Delete type=0 #648
