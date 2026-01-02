@@ -27,7 +27,7 @@ function isLevelUp(actor) {
 	return xpCur >= xpMax;
 }
 
-async function unlock(actor) {
+/*async function unlock(actor) {
   const locked = actor.getFlag("mezz-comp", "inventoryLocked");
   await actor.setFlag("mezz-comp", "inventoryLocked", false);
   ui.notifications.info(`${actor.name}: inventoryLocked = false`);
@@ -38,7 +38,7 @@ async function lock(actor) {
   await actor.setFlag("mezz-comp", "inventoryLocked", true);
   ui.notifications.info(`${actor.name}: inventoryLocked = true`);
 }
-
+*/
 Hooks.on("renderActorSheetV2", (app, html) => {
   const actor = app.actor;
   if (!actor) return;
@@ -47,9 +47,9 @@ Hooks.on("renderActorSheetV2", (app, html) => {
   const $html = html instanceof jQuery ? html : $(html);
   $html.on("click", "[data-action='findItem']", event => {
   const type = event.currentTarget.dataset.itemType;
-  if (["class","race","background"].includes(type)) {
+ /* if (["class","race","background"].includes(type)) {
     unlock(actor);
-    }
+    }*/
   });
   
   const canLevel = isLevelUp(actor);
@@ -85,8 +85,8 @@ Hooks.on("renderActorSheetV2", (app, html) => {
   `);
 
   $btn.on("click", ev => {
-    ev.preventDefault();
-    ev.stopPropagation();
+//    ev.preventDefault();
+//    ev.stopPropagation();
 //	unlock(actor);
     mezzLevelUp(actor);
   });
@@ -114,7 +114,6 @@ async function mezzLevelUp(actor) {
     ui.notifications.warn("Character has no class item.");
     return;
   }
-
   // Try official advancement manager
   try {
     const AdvMgr = game.dnd5e.applications.advancement.AdvancementManager;
@@ -134,5 +133,4 @@ async function mezzLevelUp(actor) {
   await cls.update({ "system.levels": cls.system.levels + 1 });
 
   ui.notifications.info(`Level increased: ${cls.name} ${cls.system.levels + 1}`);
-//  lock(actor);
-}
+};

@@ -1,111 +1,112 @@
 /******************************************************
- * MEZZ-COMP : Container Break + Inventory Guard
- * Uses Foundry's built-in item.system.totalWeight
+ * MEZZ-COMP : Inventory Audit + Container Break (v13)
  ******************************************************/
 
 const DEBUG = true;
-const D = (...args) => { if (DEBUG) console.log("MEZZ-COMP |", ...args); };
-/* ============================
- * GM INVENTORY AUDIT LOG
- * ============================ */
+const D = (...a) => DEBUG && console.log("MEZZ-COMP |", ...a);
 
+Hooks.once("ready", () => {
+  game.socket.on("module.mezz-comp", payload => {
+    if (!game.user.isGM) return;
+
+    if (payload.type === "inventory") {
+      ui.notifications.info(payload.msg);
+      console.log("MEZZ-COMP |", payload.msg);
+    }
+  });
+});
+
+/* ============================
+ * GM NOTIFICATION (SAFE)
+ * ============================ */
 function notifyGM(msg) {
   if (!game.user.isGM) return;
   ui.notifications.info(`Inventory Change: ${msg}`);
 }
 
-Hooks.on("preCreateItem", (itemData, options, userId) => {
-  const actor = itemData?.parent;
-  if (!actor) return true;
-
-  notifyGM(`ADD → ${itemData.name} on ${actor.name}`);
-  return true;
-});
-
-Hooks.on("preDeleteItem", (item, options, userId) => {
-  const actor = item.parent;
-  if (!actor) return true;
-
-  notifyGM(`DELETE → ${item.name} from ${actor.name}`);
-  return true;
-});
-
-Hooks.on("preUpdateItem", (item, change, options, userId) => {
-  const flat = foundry.utils.flattenObject(change);
-  if (!Object.keys(flat).length) return true;
-
-  notifyGM(`UPDATE → ${item.name} on ${item.actor?.name}`);
-  D("Item update details", flat);
-
-  return true;
-});
-
 /* ============================
- * 3) CONTAINER BREAK LOGIC
+ * INVENTORY AUDIT
  * ============================ */
+Hooks.on("createItem", (item, options, userId) => {
+  const actor = item.actor;
+  if (!actor) return;
+  notifyGM(`ADD → ${item.name} on ${actor.name}`);
+});
 
-Hooks.on("updateItem", async (item, change, options, userId) => {
-  if (!game.user.isGM) return;
+Hooks.on("deleteItem", (item, options, userId) => {
+  const actor = item.actor;
+  if (!actor) return;
+  notifyGM(`DELETE → ${item.name} from ${actor.name}`);
+});
 
+Hooks.on("updateItem", async (item, change) => {
   const actor = item.actor;
   if (!actor) return;
 
-  // Only care about containers
-  const cap = item.system?.capacity?.weight?.value;
-  const total = item.system?.contentsWeight;
+  const flat = foundry.utils.flattenObject(change);
+  if (!Object.keys(flat).length) return;
 
-  if (cap == null || total == null) return;
+  // --- inventory audit ---
+  notifyGM(`UPDATE → ${item.name} on ${actor.name}`);
 
-  // Only trigger if contentsWeight changed
-  if (change.system?.contentsWeight === undefined) return;
+  // --- container scan ---
+  const containers = actor.items.filter(i =>
+    i.system?.capacity?.weight?.value != null &&
+    i.system?.contentsWeight != null
+  );
 
-  // Debounce: avoid repeated checks
-  if (item.getFlag("mezz-comp", "breaking")) return;
+  for (const container of containers) {
+    const cap = container.system.capacity.weight.value;
+    const total = container.system.contentsWeight;
 
-  D("Container update detected", {
-    actor: actor.name,
-    container: item.name,
-    capacity: cap,
-    totalWeight: total
-  });
+    if (cap == null || total == null) continue;
 
-  const name = item.name;
+    D("Container check", {
+      container: container.name,
+      capacity: cap,
+      contents: total
+    });
 
-  // Warning zone
-  if (total >= cap - 5 && total <= cap) {
+    /* ============================
+     * RESET ZONE
+     * ============================ */
+    if (total <= cap) {
+      continue;
+    }
+
+    /* ============================
+     * WARNING
+     * ============================ 
+    if (total <= cap) {
+      await ChatMessage.create({
+        speaker: { alias: actor.name },
+        content: `<b style="color:orange">${container.name}</b> is starting to bulge at the seams!`
+      });
+      continue;
+    }
+	*/
+    /* ============================
+     * BREAK
+     * ============================ */
     await ChatMessage.create({
       speaker: { alias: actor.name },
-      content: `<b style="color:yellow">${name}</b> is starting to bulge at the seams!`
+      content: `<b style="color:red">${container.name}</b> is overloaded and <b>BURSTS OPEN</b>!`
     });
-    return;
+
+    try {
+      await AudioHelper.play({ src: "modules/mezz-comp/assets/sounds/cloth-tearing.mp3" }, true);
+    } catch {}
+
+    await actor.createEmbeddedDocuments("Item", [{
+      name: `${container.name} (Broken)`,
+      type: "loot",
+      img: container.img,
+      system: {
+        description: { value: "This container shattered from excess weight." },
+        weight: { value: container.system?.weight?.value ?? 0 }
+      }
+    }]);
+
+    await container.delete();
   }
-
-  if (total <= cap) return;
-
-  // === BREAK CONTAINER ===
-  await item.setFlag("mezz-comp", "breaking", true);
-
-  D("BREAKING container", name);
-
-  await ChatMessage.create({
-    speaker: { alias: actor.name },
-    content: `<b style="color:red">${name}</b> is overloaded and <b>BURSTS OPEN</b>!`
-  });
-
-  try {
-    await AudioHelper.play({ src: "sounds/glass-break.mp3" }, true);
-  } catch (err) {}
-
-  // Add broken container item
-  await actor.createEmbeddedDocuments("Item", [{
-    name: `${name} (Broken)`,
-    type: item.type,
-    img: item.img,
-    system: {
-      description: { value: "This container shattered from excess weight." },
-      weight: { value: item.system?.weight?.value }
-    }
-  }]);
-
-  await item.delete();
 });
