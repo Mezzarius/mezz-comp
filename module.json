@@ -3,7 +3,7 @@
   "title": "Mezz's Comp",
   "version": "1.0.8",
   "compatibility": {
-    "minimum": "13",
+    "minimum": "12",
     "verified": "13"
   },
   "authors": [
