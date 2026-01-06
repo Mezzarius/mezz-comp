@@ -1,8 +1,60 @@
-2026/01/06-17:33:16.867863 7f28ba7bd6c0 Recovering log #1131
-2026/01/06-17:33:16.872951 7f28ba7bd6c0 Delete type=0 #1131
-2026/01/06-17:33:16.873003 7f28ba7bd6c0 Delete type=3 #1129
-2026/01/06-18:01:21.382839 7f28b8bff6c0 Level-0 table #1136: started
-2026/01/06-18:01:21.382900 7f28b8bff6c0 Level-0 table #1136: 0 bytes OK
-2026/01/06-18:01:21.386595 7f28b8bff6c0 Delete type=0 #1134
-2026/01/06-18:01:21.394418 7f28b8bff6c0 Manual compaction at level-0 from '!actors!0BCCjxb3PDDWShLA' @ 72057594037927935 : 1 .. '!folders!wmwCkut184sNv8bC' @ 0 : 0; will stop at (end)
-2026/01/06-18:01:21.394747 7f28b8bff6c0 Manual compaction at level-1 from '!actors!0BCCjxb3PDDWShLA' @ 72057594037927935 : 1 .. '!folders!wmwCkut184sNv8bC' @ 0 : 0; will stop at (end)
+2026/01/06-18:31:19.462295 7ff92afbe6c0 Log #887: 0 ops saved to Table #1111 OK
+2026/01/06-18:31:19.462428 7ff92afbe6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary/000887.log: OK
+2026/01/06-18:31:19.462468 7ff92afbe6c0 Log #1018: 0 ops saved to Table #1112 OK
+2026/01/06-18:31:19.462487 7ff92afbe6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary/001018.log: OK
+2026/01/06-18:31:19.462512 7ff92afbe6c0 Log #1110: 0 ops saved to Table #1113 OK
+2026/01/06-18:31:19.462539 7ff92afbe6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary/001110.log: OK
+2026/01/06-18:31:19.462572 7ff92afbe6c0 Log #1021: 0 ops saved to Table #1114 OK
+2026/01/06-18:31:19.462589 7ff92afbe6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary/001021.log: OK
+2026/01/06-18:31:19.462636 7ff92afbe6c0 Log #1041: 0 ops saved to Table #1115 OK
+2026/01/06-18:31:19.462672 7ff92afbe6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary/001041.log: OK
+2026/01/06-18:31:19.468972 7ff92afbe6c0 Table #814: 1381 entries OK
+2026/01/06-18:31:19.474449 7ff92afbe6c0 Table #807: 471 entries OK
+2026/01/06-18:31:19.481411 7ff92afbe6c0 Table #824: 1402 entries OK
+2026/01/06-18:31:19.487680 7ff92afbe6c0 Table #911: 1406 entries OK
+2026/01/06-18:31:19.494059 7ff92afbe6c0 Table #1075: 1378 entries OK
+2026/01/06-18:31:19.499749 7ff92afbe6c0 Table #804: 485 entries OK
+2026/01/06-18:31:19.506137 7ff92afbe6c0 Table #821: 1352 entries OK
+2026/01/06-18:31:19.513511 7ff92afbe6c0 Table #820: 1357 entries OK
+2026/01/06-18:31:19.519795 7ff92afbe6c0 Table #1074: 1354 entries OK
+2026/01/06-18:31:19.525698 7ff92afbe6c0 Table #908: 1098 entries OK
+2026/01/06-18:31:19.531473 7ff92afbe6c0 Table #1077: 1432 entries OK
+2026/01/06-18:31:19.536881 7ff92afbe6c0 Table #1069: 1380 entries OK
+2026/01/06-18:31:19.542481 7ff92afbe6c0 Table #1065: 478 entries OK
+2026/01/06-18:31:19.547878 7ff92afbe6c0 Table #906: 471 entries OK
+2026/01/06-18:31:19.553279 7ff92afbe6c0 Table #805: 478 entries OK
+2026/01/06-18:31:19.559426 7ff92afbe6c0 Table #912: 1324 entries OK
+2026/01/06-18:31:19.565074 7ff92afbe6c0 Table #823: 1377 entries OK
+2026/01/06-18:31:19.570938 7ff92afbe6c0 Table #1078: 1326 entries OK
+2026/01/06-18:31:19.577329 7ff92afbe6c0 Table #1072: 1324 entries OK
+2026/01/06-18:31:19.582438 7ff92afbe6c0 Table #826: 1265 entries OK
+2026/01/06-18:31:19.584276 7ff92afbe6c0 Table #829: 2382 entries OK
+2026/01/06-18:31:19.590109 7ff92afbe6c0 Table #909: 1377 entries OK
+2026/01/06-18:31:19.595982 7ff92afbe6c0 Table #1064: 485 entries OK
+2026/01/06-18:31:19.602276 7ff92afbe6c0 Table #910: 1360 entries OK
+2026/01/06-18:31:19.609621 7ff92afbe6c0 Table #808: 600 entries OK
+2026/01/06-18:31:19.615674 7ff92afbe6c0 Table #1071: 1400 entries OK
+2026/01/06-18:31:19.621935 7ff92afbe6c0 Table #1066: 472 entries OK
+2026/01/06-18:31:19.628299 7ff92afbe6c0 Table #817: 1400 entries OK
+2026/01/06-18:31:19.635443 7ff92afbe6c0 Table #809: 1100 entries OK
+2026/01/06-18:31:19.643508 7ff92afbe6c0 Table #1079: 3985 entries OK
+2026/01/06-18:31:19.649387 7ff92afbe6c0 Table #818: 1325 entries OK
+2026/01/06-18:31:19.656404 7ff92afbe6c0 Table #904: 485 entries OK
+2026/01/06-18:31:19.662833 7ff92afbe6c0 Table #825: 1436 entries OK
+2026/01/06-18:31:19.668821 7ff92afbe6c0 Table #1073: 1355 entries OK
+2026/01/06-18:31:19.674957 7ff92afbe6c0 Table #1070: 1362 entries OK
+2026/01/06-18:31:19.680620 7ff92afbe6c0 Table #907: 600 entries OK
+2026/01/06-18:31:19.687138 7ff92afbe6c0 Table #812: 3162 entries OK
+2026/01/06-18:31:19.693082 7ff92afbe6c0 Table #1068: 1112 entries OK
+2026/01/06-18:31:19.700576 7ff92afbe6c0 Table #815: 1362 entries OK
+2026/01/06-18:31:19.706260 7ff92afbe6c0 Table #905: 478 entries OK
+2026/01/06-18:31:19.706567 7ff92afbe6c0 Table #913: 8 entries OK
+2026/01/06-18:31:19.713792 7ff92afbe6c0 Table #1067: 600 entries OK
+2026/01/06-18:31:19.715256 7ff92afbe6c0 Table #1080: 1384 entries OK
+2026/01/06-18:31:19.722357 7ff92afbe6c0 Table #1076: 1404 entries OK
+2026/01/06-18:31:19.722707 7ff92afbe6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary/MANIFEST-000886: OK
+2026/01/06-18:31:19.722752 7ff92afbe6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary/MANIFEST-001040: OK
+2026/01/06-18:31:19.722790 7ff92afbe6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary/MANIFEST-001109: OK
+2026/01/06-18:31:19.722819 7ff92afbe6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary/MANIFEST-001016: OK
+2026/01/06-18:31:19.722847 7ff92afbe6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary/MANIFEST-001020: OK
+2026/01/06-18:31:19.725890 7ff92afbe6c0 **** Repaired leveldb /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/beastiary; recovered 44 files; 88024389 bytes. Some data may have been lost. ****

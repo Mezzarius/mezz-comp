@@ -1,7 +1,24 @@
-2026/01/06-17:33:17.352894 7f28bafbe6c0 Recovering log #895
-2026/01/06-17:33:17.359257 7f28bafbe6c0 Delete type=0 #895
-2026/01/06-17:33:17.359300 7f28bafbe6c0 Delete type=3 #893
-2026/01/06-18:01:21.420438 7f28b8bff6c0 Level-0 table #900: started
-2026/01/06-18:01:21.420483 7f28b8bff6c0 Level-0 table #900: 0 bytes OK
-2026/01/06-18:01:21.424843 7f28b8bff6c0 Delete type=0 #898
-2026/01/06-18:01:21.435149 7f28b8bff6c0 Manual compaction at level-0 from '!folders!6Rjy9qQbiMZvEVt2' @ 72057594037927935 : 1 .. '!tables.results!zxnlQBEC6dXzSdCh.yPdfnaxRTqIqUGuA' @ 0 : 0; will stop at (end)
+2026/01/06-18:31:21.006076 7ff92a7bd6c0 Log #655: 0 ops saved to Table #875 OK
+2026/01/06-18:31:21.006156 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/000655.log: OK
+2026/01/06-18:31:21.006186 7ff92a7bd6c0 Log #776: 0 ops saved to Table #876 OK
+2026/01/06-18:31:21.006210 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/000776.log: OK
+2026/01/06-18:31:21.006230 7ff92a7bd6c0 Log #874: 0 ops saved to Table #877 OK
+2026/01/06-18:31:21.006245 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/000874.log: OK
+2026/01/06-18:31:21.006271 7ff92a7bd6c0 Log #779: 0 ops saved to Table #878 OK
+2026/01/06-18:31:21.006288 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/000779.log: OK
+2026/01/06-18:31:21.032310 7ff92a7bd6c0 Log #819: 3336 ops saved to Table #879 OK
+2026/01/06-18:31:21.033049 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/000819.log: OK
+2026/01/06-18:31:21.040945 7ff92a7bd6c0 Table #174: 12395 entries OK
+2026/01/06-18:31:21.048304 7ff92a7bd6c0 Table #821: 11277 entries OK
+2026/01/06-18:31:21.057889 7ff92a7bd6c0 Table #848: 11289 entries OK
+2026/01/06-18:31:21.059478 7ff92a7bd6c0 Table #175: 2200 entries OK
+2026/01/06-18:31:21.061911 7ff92a7bd6c0 Table #808: 3297 entries OK
+2026/01/06-18:31:21.062033 7ff92a7bd6c0 Table #812: 21 entries OK
+2026/01/06-18:31:21.065291 7ff92a7bd6c0 Table #879: 3336 entries OK
+2026/01/06-18:31:21.065756 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/MANIFEST-000774: OK
+2026/01/06-18:31:21.065791 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/MANIFEST-000654: OK
+2026/01/06-18:31:21.065818 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/MANIFEST-000797: OK
+2026/01/06-18:31:21.065837 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/MANIFEST-000780: OK
+2026/01/06-18:31:21.065857 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/MANIFEST-000778: OK
+2026/01/06-18:31:21.065885 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables/MANIFEST-000873: OK
+2026/01/06-18:31:21.068848 7ff92a7bd6c0 **** Repaired leveldb /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/tables; recovered 7 files; 8553818 bytes. Some data may have been lost. ****

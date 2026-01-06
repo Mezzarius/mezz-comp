@@ -1,9 +1,9 @@
 {
   "id": "mezz-comp",
   "title": "Mezz's Comp",
-  "version": "1.0.8",
+  "version": "1.1.1",
   "compatibility": {
-    "minimum": "13",
+    "minimum": "12",
     "verified": "13"
   },
   "authors": [
@@ -15,7 +15,23 @@
     }
   ],
   "flags": {
-    "canUpload": true
+    "canUpload": true,
+	"dnd5e": {
+		"spellLists": [
+		"Compendium.mezz-comp.books.JournalEntry.kBX0W7OrsXXqYWdi.JournalEntryPage.K8uuJwZ7NwpIXVlF",
+		"Compendium.mezz-comp.books.JournalEntry.kBX0W7OrsXXqYWdi.JournalEntryPage.wwia6Wwo4BgE9GSI",
+		"Compendium.mezz-comp.books.JournalEntry.kBX0W7OrsXXqYWdi.JournalEntryPage.8yD9Jgp404hfZ9ie",
+		"Compendium.mezz-comp.books.JournalEntry.kBX0W7OrsXXqYWdi.JournalEntryPage.5HnIk6HsrSxkvkz5",
+		"Compendium.mezz-comp.books.JournalEntry.kBX0W7OrsXXqYWdi.JournalEntryPage.VfZ5mH2ZuyFq82Ga",
+		"Compendium.mezz-comp.books.JournalEntry.kBX0W7OrsXXqYWdi.JournalEntryPage.6AnqLUowgdsqMFvz",
+		"Compendium.mezz-comp.books.JournalEntry.kBX0W7OrsXXqYWdi.JournalEntryPage.sSzagq8GvYXpfmfs",
+		"Compendium.mezz-comp.books.JournalEntry.kBX0W7OrsXXqYWdi.JournalEntryPage.LhvuDQEyrCdg5EfU",
+		"Compendium.mezz-comp.books.JournalEntry.kBX0W7OrsXXqYWdi.JournalEntryPage.SkHptN2PTzFGDaEj"
+		],
+		"sourceBooks": {
+			"mezz-comp": "Mezz's Compendiums"
+		}
+	}
   },
   "scripts": [
     "scripts/dsn-fix.js",
@@ -37,7 +53,14 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      }
+      },
+	  "flags": {
+		  "dnd5e": {
+			"sourceBooks": {
+				"mezz-comp": "Mezz's Compendiums"
+			}
+		}
+	  }
     },
     {
       "name": "backgrounds",
@@ -49,7 +72,14 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      }
+      },
+	  "flags": {
+		  "dnd5e": {
+			"sourceBooks": {
+				"mezz-comp": "Mezz's Compendiums"
+			}
+		  }
+  	  }
     },
     {
       "name": "beastiary",
@@ -61,7 +91,14 @@
       "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
-      }
+      },
+	  "flags": {
+		  "dnd5e": {
+			"sourceBooks": {
+				"mezz-comp": "Mezz's Compendiums"
+			}
+		  }
+	  }
     },
     {
       "name": "classes",
@@ -73,7 +110,14 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      }
+      },
+	  "flags": {
+		  "dnd5e": {
+			"sourceBooks": {
+				"mezz-comp": "Mezz's Compendiums"
+			}
+		  }
+  	  }
     },
     {
       "name": "races",
@@ -85,7 +129,14 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      }
+      },
+	  "flags": {
+		  "dnd5e": {
+			"sourceBooks": {
+				"mezz-comp": "Mezz's Compendiums"
+			}
+		  }
+  	  }
     },
     {
       "name": "feats",
@@ -97,7 +148,14 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      }
+      },
+	  "flags": {
+		  "dnd5e": {
+			"sourceBooks": {
+				"mezz-comp": "Mezz's Compendiums"
+			}
+		  }
+  	  }
     },
     {
       "name": "spells",
@@ -109,7 +167,14 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      }
+      },
+	  "flags": {
+		  "dnd5e": {
+			"sourceBooks": {
+				"mezz-comp": "Mezz's Compendiums"
+			}
+		  }
+  	  }
     },
     {
       "name": "items",
@@ -120,7 +185,14 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      }
+      },
+	  "flags": {
+		  "dnd5e": {
+			"sourceBooks": {
+				"mezz-comp": "Mezz's Compendiums"
+			}
+		  }
+  	  }
     },
     {
       "name": "classfeatures",
@@ -132,7 +204,14 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      }
+      },
+	  "flags": {
+		  "dnd5e": {
+			"sourceBooks": {
+				"mezz-comp": "Mezz's Compendiums"
+			}
+		  }
+  	  }
     },
     {
       "name": "monsterfeatures",
@@ -180,7 +259,14 @@
       "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
-      }
+      },
+	  "flags": {
+		  "dnd5e": {
+			"sourceBooks": {
+				"mezz-comp": "Mezz's Compendiums"
+			}
+		  }
+  	  }
     },
     {
       "name": "macros",
@@ -243,5 +329,5 @@
   ],
   "url": "https://github.com/Mezzarius/mezz-comp",
   "manifest": "https://github.com/Mezzarius/mezz-comp/releases/latest/download/module.json",
-  "download": "https://github.com/Mezzarius/mezz-comp/releases/download/v1.0.8/module.zip"
+  "download": "https://github.com/Mezzarius/mezz-comp/releases/download/v1.1.1/module.zip"
 }
