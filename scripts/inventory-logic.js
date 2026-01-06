@@ -5,7 +5,7 @@
 const DEBUG = true;
 const D = (...a) => DEBUG && console.log("MEZZ-COMP |", ...a);
 
-Hooks.once("ready", () => {
+/*Hooks.once("ready", () => {
   game.socket.on("module.mezz-comp", payload => {
     if (!game.user.isGM) return;
 
@@ -19,7 +19,7 @@ Hooks.once("ready", () => {
 /* ============================
  * GM NOTIFICATION (SAFE)
  * ============================ */
-function notifyGM(msg) {
+/*function notifyGM(msg) {
   if (!game.user.isGM) return;
   ui.notifications.info(`Inventory Change: ${msg}`);
 }
@@ -27,7 +27,7 @@ function notifyGM(msg) {
 /* ============================
  * INVENTORY AUDIT
  * ============================ */
-Hooks.on("createItem", (item, options, userId) => {
+/*Hooks.on("createItem", (item, options, userId) => {
   const actor = item.actor;
   if (!actor) return;
   notifyGM(`ADD → ${item.name} on ${actor.name}`);
@@ -38,7 +38,7 @@ Hooks.on("deleteItem", (item, options, userId) => {
   if (!actor) return;
   notifyGM(`DELETE → ${item.name} from ${actor.name}`);
 });
-
+*/
 Hooks.on("updateItem", async (item, change) => {
   const actor = item.actor;
   if (!actor) return;
@@ -47,7 +47,7 @@ Hooks.on("updateItem", async (item, change) => {
   if (!Object.keys(flat).length) return;
 
   // --- inventory audit ---
-  notifyGM(`UPDATE → ${item.name} on ${actor.name}`);
+//  notifyGM(`UPDATE → ${item.name} on ${actor.name}`);
 
   // --- container scan ---
   const containers = actor.items.filter(i =>
