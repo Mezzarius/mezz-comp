@@ -1,3 +1,23 @@
-2026/01/06-17:33:17.501274 7f28b9fbc6c0 Recovering log #876
-2026/01/06-17:33:17.508742 7f28b9fbc6c0 Delete type=0 #876
-2026/01/06-17:33:17.508835 7f28b9fbc6c0 Delete type=3 #874
+2026/01/21-17:00:09.415391 7f9b24fbc6c0 Recovering log #951
+2026/01/21-17:00:09.416370 7f9b24fbc6c0 Level-0 table #953: started
+2026/01/21-17:00:09.420866 7f9b24fbc6c0 Level-0 table #953: 2427 bytes OK
+2026/01/21-17:00:09.433286 7f9b24fbc6c0 Delete type=0 #951
+2026/01/21-17:00:09.433356 7f9b24fbc6c0 Delete type=3 #950
+2026/01/22-02:00:15.752129 7f98867ff6c0 Level-0 table #956: started
+2026/01/22-02:00:15.752802 7f98867ff6c0 Level-0 table #956: 0 bytes OK
+2026/01/22-02:00:15.756519 7f98867ff6c0 Delete type=0 #954
+2026/01/22-02:00:15.767781 7f98867ff6c0 Manual compaction at level-0 from '!macros!1BFeFaT1FMVx8vYx' @ 72057594037927935 : 1 .. '!macros!tCzwkXx8SD5tnxiv' @ 0 : 0; will stop at '!macros!tCzwkXx8SD5tnxiv' @ 86 : 1
+2026/01/22-02:00:15.767796 7f98867ff6c0 Compacting 1@0 + 0@1 files
+2026/01/22-02:00:15.771024 7f98867ff6c0 Generated table #957@0: 2 keys, 2427 bytes
+2026/01/22-02:00:15.771053 7f98867ff6c0 Compacted 1@0 + 0@1 files => 2427 bytes
+2026/01/22-02:00:15.773403 7f98867ff6c0 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/01/22-02:00:15.773563 7f98867ff6c0 Delete type=2 #953
+2026/01/22-02:00:15.785725 7f98867ff6c0 Manual compaction at level-0 from '!macros!tCzwkXx8SD5tnxiv' @ 86 : 1 .. '!macros!tCzwkXx8SD5tnxiv' @ 0 : 0; will stop at (end)
+2026/01/22-02:00:15.792982 7f98867ff6c0 Manual compaction at level-1 from '!macros!1BFeFaT1FMVx8vYx' @ 72057594037927935 : 1 .. '!macros!tCzwkXx8SD5tnxiv' @ 0 : 0; will stop at '!macros!tCzwkXx8SD5tnxiv' @ 86 : 1
+2026/01/22-02:00:15.792995 7f98867ff6c0 Compacting 1@1 + 1@2 files
+2026/01/22-02:00:15.797225 7f98867ff6c0 Generated table #958@1: 23 keys, 52404 bytes
+2026/01/22-02:00:15.797257 7f98867ff6c0 Compacted 1@1 + 1@2 files => 52404 bytes
+2026/01/22-02:00:15.800018 7f98867ff6c0 compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/01/22-02:00:15.800194 7f98867ff6c0 Delete type=2 #957
+2026/01/22-02:00:15.800354 7f98867ff6c0 Delete type=2 #925
+2026/01/22-02:00:15.807626 7f98867ff6c0 Manual compaction at level-1 from '!macros!tCzwkXx8SD5tnxiv' @ 86 : 1 .. '!macros!tCzwkXx8SD5tnxiv' @ 0 : 0; will stop at (end)

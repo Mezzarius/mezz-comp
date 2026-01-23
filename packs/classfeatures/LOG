@@ -1,22 +1,3 @@
-2026/01/06-18:31:20.890739 7ff92b7bf6c0 Delete type=3 #1
-2026/01/06-18:31:20.891022 7ff688dff6c0 Compacting 6@0 + 0@1 files
-2026/01/06-18:31:20.905791 7ff688dff6c0 Generated table #733@0: 435 keys, 483202 bytes
-2026/01/06-18:31:20.905829 7ff688dff6c0 Compacted 6@0 + 0@1 files => 483202 bytes
-2026/01/06-18:31:20.913255 7ff688dff6c0 compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/01/06-18:31:20.913579 7ff688dff6c0 Delete type=2 #691
-2026/01/06-18:31:20.913852 7ff688dff6c0 Delete type=2 #725
-2026/01/06-18:31:20.914028 7ff688dff6c0 Delete type=2 #568
-2026/01/06-18:31:20.914157 7ff688dff6c0 Delete type=2 #727
-2026/01/06-18:31:20.914241 7ff688dff6c0 Delete type=2 #439
-2026/01/06-18:31:20.914343 7ff688dff6c0 Delete type=2 #631
-2026/01/06-22:59:00.297308 7ff688dff6c0 Level-0 table #735: started
-2026/01/06-22:59:00.312573 7ff688dff6c0 Level-0 table #735: 121327 bytes OK
-2026/01/06-22:59:00.319311 7ff688dff6c0 Delete type=0 #732
-2026/01/06-22:59:00.415394 7ff688dff6c0 Manual compaction at level-0 from '!folders!2hVgqOvBR7tEWDgR' @ 72057594037927935 : 1 .. '!items.effects!wD9jbh9u3Mu9I0fc.dg8SEwPpDY7VDhxW' @ 0 : 0; will stop at '!items.effects!QXFBLLJxClFC9qIZ.dfSnKN4j95fztet3' @ 1686 : 1
-2026/01/06-22:59:00.415409 7ff688dff6c0 Compacting 1@0 + 1@1 files
-2026/01/06-22:59:00.432039 7ff688dff6c0 Generated table #736@0: 491 keys, 563281 bytes
-2026/01/06-22:59:00.432087 7ff688dff6c0 Compacted 1@0 + 1@1 files => 563281 bytes
-2026/01/06-22:59:00.433924 7ff688dff6c0 compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/01/06-22:59:00.434057 7ff688dff6c0 Delete type=2 #735
-2026/01/06-22:59:00.434430 7ff688dff6c0 Delete type=2 #733
-2026/01/06-22:59:00.436205 7ff688dff6c0 Manual compaction at level-0 from '!items.effects!QXFBLLJxClFC9qIZ.dfSnKN4j95fztet3' @ 1686 : 1 .. '!items.effects!wD9jbh9u3Mu9I0fc.dg8SEwPpDY7VDhxW' @ 0 : 0; will stop at (end)
+2026/01/22-02:01:08.473168 7f9b24fbc6c0 Recovering log #806
+2026/01/22-02:01:08.479144 7f9b24fbc6c0 Delete type=3 #802
+2026/01/22-02:01:08.479207 7f9b24fbc6c0 Delete type=0 #806

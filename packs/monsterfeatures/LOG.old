@@ -1,17 +1,7 @@
-2026/01/06-18:31:20.909972 7ff92a7bd6c0 Log #685: 0 ops saved to Table #686 OK
-2026/01/06-18:31:20.910099 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures/000685.log: OK
-2026/01/06-18:31:20.910141 7ff92a7bd6c0 Log #612: 0 ops saved to Table #687 OK
-2026/01/06-18:31:20.910169 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures/000612.log: OK
-2026/01/06-18:31:20.910205 7ff92a7bd6c0 Log #491: 0 ops saved to Table #688 OK
-2026/01/06-18:31:20.910230 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures/000491.log: OK
-2026/01/06-18:31:20.910250 7ff92a7bd6c0 Log #615: 0 ops saved to Table #689 OK
-2026/01/06-18:31:20.910266 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures/000615.log: OK
-2026/01/06-18:31:20.910298 7ff92a7bd6c0 Log #635: 0 ops saved to Table #690 OK
-2026/01/06-18:31:20.910315 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures/000635.log: OK
-2026/01/06-18:31:20.912188 7ff92a7bd6c0 Table #571: 545 entries OK
-2026/01/06-18:31:20.912401 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures/MANIFEST-000614: OK
-2026/01/06-18:31:20.912428 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures/MANIFEST-000490: OK
-2026/01/06-18:31:20.912506 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures/MANIFEST-000634: OK
-2026/01/06-18:31:20.912549 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures/MANIFEST-000684: OK
-2026/01/06-18:31:20.912582 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures/MANIFEST-000610: OK
-2026/01/06-18:31:20.921363 7ff92a7bd6c0 **** Repaired leveldb /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/monsterfeatures; recovered 1 files; 591717 bytes. Some data may have been lost. ****
+2026/01/21-17:00:09.122695 7f9b25fbe6c0 Recovering log #759
+2026/01/21-17:00:09.135068 7f9b25fbe6c0 Delete type=3 #758
+2026/01/21-17:00:09.135113 7f9b25fbe6c0 Delete type=0 #759
+2026/01/22-02:00:15.608880 7f98867ff6c0 Level-0 table #763: started
+2026/01/22-02:00:15.614442 7f98867ff6c0 Level-0 table #763: 0 bytes OK
+2026/01/22-02:00:15.629761 7f98867ff6c0 Delete type=0 #761
+2026/01/22-02:00:15.685973 7f98867ff6c0 Manual compaction at level-0 from '!folders!4T18pEvubPMQLzvD' @ 72057594037927935 : 1 .. '!items.effects!mmWorldshakingMo.ERWPInrx4mXsqrwL' @ 0 : 0; will stop at (end)

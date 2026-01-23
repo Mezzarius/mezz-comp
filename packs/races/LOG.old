@@ -1,21 +1,7 @@
-2026/01/06-18:31:20.503436 7ff92a7bd6c0 Log #654: 0 ops saved to Table #732 OK
-2026/01/06-18:31:20.503747 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races/000654.log: OK
-2026/01/06-18:31:20.503786 7ff92a7bd6c0 Log #630: 0 ops saved to Table #733 OK
-2026/01/06-18:31:20.503927 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races/000630.log: OK
-2026/01/06-18:31:20.503969 7ff92a7bd6c0 Log #707: 0 ops saved to Table #734 OK
-2026/01/06-18:31:20.503999 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races/000707.log: OK
-2026/01/06-18:31:20.504022 7ff92a7bd6c0 Log #633: 0 ops saved to Table #735 OK
-2026/01/06-18:31:20.504039 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races/000633.log: OK
-2026/01/06-18:31:20.504060 7ff92a7bd6c0 Log #506: 0 ops saved to Table #736 OK
-2026/01/06-18:31:20.504078 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races/000506.log: OK
-2026/01/06-18:31:20.508192 7ff92a7bd6c0 Table #640: 222 entries OK
-2026/01/06-18:31:20.510422 7ff92a7bd6c0 Table #589: 222 entries OK
-2026/01/06-18:31:20.512387 7ff92a7bd6c0 Table #731: 236 entries OK
-2026/01/06-18:31:20.514137 7ff92a7bd6c0 Table #484: 187 entries OK
-2026/01/06-18:31:20.516836 7ff92a7bd6c0 Table #701: 230 entries OK
-2026/01/06-18:31:20.517170 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races/MANIFEST-000653: OK
-2026/01/06-18:31:20.517266 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races/MANIFEST-000706: OK
-2026/01/06-18:31:20.517293 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races/MANIFEST-000632: OK
-2026/01/06-18:31:20.517312 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races/MANIFEST-000628: OK
-2026/01/06-18:31:20.517330 7ff92a7bd6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races/MANIFEST-000505: OK
-2026/01/06-18:31:20.527882 7ff92a7bd6c0 **** Repaired leveldb /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/races; recovered 5 files; 1868316 bytes. Some data may have been lost. ****
+2026/01/21-17:00:08.729799 7f9b25fbe6c0 Recovering log #805
+2026/01/21-17:00:08.762128 7f9b25fbe6c0 Delete type=3 #804
+2026/01/21-17:00:08.762234 7f9b25fbe6c0 Delete type=0 #805
+2026/01/22-02:00:15.508116 7f98867ff6c0 Level-0 table #809: started
+2026/01/22-02:00:15.509101 7f98867ff6c0 Level-0 table #809: 0 bytes OK
+2026/01/22-02:00:15.520572 7f98867ff6c0 Delete type=0 #807
+2026/01/22-02:00:15.533997 7f98867ff6c0 Manual compaction at level-0 from '!folders!4kXg6JbA9C46luPX' @ 72057594037927935 : 1 .. '!items.effects!wRfcZpLYyQFgjmoy.waI4oHqhpbKUem0M' @ 0 : 0; will stop at (end)

@@ -1,22 +1,7 @@
-2026/01/06-18:31:19.421931 7ff929fbc6c0 Log #495: 0 ops saved to Table #711 OK
-2026/01/06-18:31:19.422082 7ff929fbc6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds/000495.log: OK
-2026/01/06-18:31:19.429700 7ff929fbc6c0 Log #624: 155 ops saved to Table #712 OK
-2026/01/06-18:31:19.429811 7ff929fbc6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds/000624.log: OK
-2026/01/06-18:31:19.429885 7ff929fbc6c0 Log #620: 0 ops saved to Table #713 OK
-2026/01/06-18:31:19.429921 7ff929fbc6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds/000620.log: OK
-2026/01/06-18:31:19.429967 7ff929fbc6c0 Log #647: 0 ops saved to Table #714 OK
-2026/01/06-18:31:19.429990 7ff929fbc6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds/000647.log: OK
-2026/01/06-18:31:19.430015 7ff929fbc6c0 Log #701: 0 ops saved to Table #715 OK
-2026/01/06-18:31:19.430035 7ff929fbc6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds/000701.log: OK
-2026/01/06-18:31:19.430459 7ff929fbc6c0 Table #691: 46 entries OK
-2026/01/06-18:31:19.430736 7ff929fbc6c0 Table #622: 41 entries OK
-2026/01/06-18:31:19.431124 7ff929fbc6c0 Table #641: 46 entries OK
-2026/01/06-18:31:19.431866 7ff929fbc6c0 Table #449: 63 entries OK
-2026/01/06-18:31:19.432189 7ff929fbc6c0 Table #710: 46 entries OK
-2026/01/06-18:31:19.433091 7ff929fbc6c0 Table #712: 155 entries OK
-2026/01/06-18:31:19.433307 7ff929fbc6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds/MANIFEST-000494: OK
-2026/01/06-18:31:19.433345 7ff929fbc6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds/MANIFEST-000700: OK
-2026/01/06-18:31:19.433364 7ff929fbc6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds/MANIFEST-000623: OK
-2026/01/06-18:31:19.433381 7ff929fbc6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds/MANIFEST-000646: OK
-2026/01/06-18:31:19.433400 7ff929fbc6c0 Archiving /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds/MANIFEST-000618: OK
-2026/01/06-18:31:19.436970 7ff929fbc6c0 **** Repaired leveldb /home/FoundryVTT/foundrydata/Data/modules/mezz-comp/packs/backgrounds; recovered 6 files; 837231 bytes. Some data may have been lost. ****
+2026/01/21-17:00:07.351499 7f9b257bd6c0 Recovering log #784
+2026/01/21-17:00:07.356967 7f9b257bd6c0 Delete type=0 #784
+2026/01/21-17:00:07.357018 7f9b257bd6c0 Delete type=3 #783
+2026/01/22-02:00:15.504974 7f98867ff6c0 Level-0 table #788: started
+2026/01/22-02:00:15.505382 7f98867ff6c0 Level-0 table #788: 0 bytes OK
+2026/01/22-02:00:15.508000 7f98867ff6c0 Delete type=0 #786
+2026/01/22-02:00:15.521075 7f98867ff6c0 Manual compaction at level-0 from '!folders!5mN3du2yebTIHLSF' @ 72057594037927935 : 1 .. '!items.effects!Uo9a7pYbqGPSSIFG.fear000000000000' @ 0 : 0; will stop at (end)
