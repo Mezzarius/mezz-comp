@@ -33,12 +33,13 @@
       }
     }
   },
-  "scripts": [
+  "esmodules": [
     "scripts/main.mjs"
   ],
   "styles": [
     "styles/mezz-comp.css"
   ],
+  "socket":true,
   "packs": [
     {
       "name": "books",
