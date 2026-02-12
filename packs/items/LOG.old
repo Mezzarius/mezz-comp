@@ -1,3 +1,17 @@
-2026/01/31-03:37:03.978884 7fcf78fbd6c0 Recovering log #1070
-2026/01/31-03:37:03.988386 7fcf78fbd6c0 Delete type=0 #1070
-2026/01/31-03:37:03.988451 7fcf78fbd6c0 Delete type=3 #1068
+2026/02/09-15:52:13.769705 7f4badfbc6c0 Recovering log #1076
+2026/02/09-15:52:13.775722 7f4badfbc6c0 Delete type=3 #1074
+2026/02/09-15:52:13.775767 7f4badfbc6c0 Delete type=0 #1076
+2026/02/11-21:39:34.231261 7f490fbff6c0 Level-0 table #1083: started
+2026/02/11-21:39:34.233862 7f490fbff6c0 Level-0 table #1083: 35645 bytes OK
+2026/02/11-21:39:34.235943 7f490fbff6c0 Delete type=0 #1081
+2026/02/11-21:39:34.273096 7f490fbff6c0 Manual compaction at level-0 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)
+2026/02/11-21:39:34.273262 7f490fbff6c0 Manual compaction at level-1 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at '!items.effects!dmgWyvernPoison0.Z6F7KLx6dOmtxbY0' @ 13916 : 1
+2026/02/11-21:39:34.273268 7f490fbff6c0 Compacting 1@1 + 2@2 files
+2026/02/11-21:39:34.305519 7f490fbff6c0 Generated table #1084@1: 1426 keys, 2122665 bytes
+2026/02/11-21:39:34.312176 7f490fbff6c0 Generated table #1085@1: 558 keys, 303116 bytes
+2026/02/11-21:39:34.312198 7f490fbff6c0 Compacted 1@1 + 2@2 files => 2425781 bytes
+2026/02/11-21:39:34.313599 7f490fbff6c0 compacted to: files[ 0 0 2 0 0 0 0 ]
+2026/02/11-21:39:34.313869 7f490fbff6c0 Delete type=2 #1078
+2026/02/11-21:39:34.314315 7f490fbff6c0 Delete type=2 #1079
+2026/02/11-21:39:34.314432 7f490fbff6c0 Delete type=2 #1083
+2026/02/11-21:39:34.319038 7f490fbff6c0 Manual compaction at level-1 from '!items.effects!dmgWyvernPoison0.Z6F7KLx6dOmtxbY0' @ 13916 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)
