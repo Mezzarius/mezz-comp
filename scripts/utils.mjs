@@ -21,6 +21,10 @@ export async function safeRun(label, fn) {
   }
 }
 
+export function getModuleAsset(path) {
+  return `modules/mezz-comp/${path}`;
+}
+
 export function getSetting(key) {
   return game.settings.get(MODULE_ID, key);
 }

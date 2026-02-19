@@ -10,6 +10,7 @@ import "./features/dsn-fix.mjs";
 import "./features/inventory-logic.mjs";
 import "./features/level-up.mjs";
 import "./features/projectile-tracker.mjs";
+import "./features/fumbles.mjs";
 
 Hooks.once("init", () => {
   console.log("🧩 Mezz’s Comp | Initializing...");

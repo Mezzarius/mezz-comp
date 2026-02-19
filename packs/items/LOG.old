@@ -1,17 +1,17 @@
-2026/02/09-15:52:13.769705 7f4badfbc6c0 Recovering log #1076
-2026/02/09-15:52:13.775722 7f4badfbc6c0 Delete type=3 #1074
-2026/02/09-15:52:13.775767 7f4badfbc6c0 Delete type=0 #1076
-2026/02/11-21:39:34.231261 7f490fbff6c0 Level-0 table #1083: started
-2026/02/11-21:39:34.233862 7f490fbff6c0 Level-0 table #1083: 35645 bytes OK
-2026/02/11-21:39:34.235943 7f490fbff6c0 Delete type=0 #1081
-2026/02/11-21:39:34.273096 7f490fbff6c0 Manual compaction at level-0 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)
-2026/02/11-21:39:34.273262 7f490fbff6c0 Manual compaction at level-1 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at '!items.effects!dmgWyvernPoison0.Z6F7KLx6dOmtxbY0' @ 13916 : 1
-2026/02/11-21:39:34.273268 7f490fbff6c0 Compacting 1@1 + 2@2 files
-2026/02/11-21:39:34.305519 7f490fbff6c0 Generated table #1084@1: 1426 keys, 2122665 bytes
-2026/02/11-21:39:34.312176 7f490fbff6c0 Generated table #1085@1: 558 keys, 303116 bytes
-2026/02/11-21:39:34.312198 7f490fbff6c0 Compacted 1@1 + 2@2 files => 2425781 bytes
-2026/02/11-21:39:34.313599 7f490fbff6c0 compacted to: files[ 0 0 2 0 0 0 0 ]
-2026/02/11-21:39:34.313869 7f490fbff6c0 Delete type=2 #1078
-2026/02/11-21:39:34.314315 7f490fbff6c0 Delete type=2 #1079
-2026/02/11-21:39:34.314432 7f490fbff6c0 Delete type=2 #1083
-2026/02/11-21:39:34.319038 7f490fbff6c0 Manual compaction at level-1 from '!items.effects!dmgWyvernPoison0.Z6F7KLx6dOmtxbY0' @ 13916 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)
+2026/02/18-22:43:00.106614 7f4badfbc6c0 Recovering log #1097
+2026/02/18-22:43:00.113742 7f4badfbc6c0 Delete type=0 #1097
+2026/02/18-22:43:00.113826 7f4badfbc6c0 Delete type=3 #1095
+2026/02/19-00:48:45.417843 7f490fbff6c0 Level-0 table #1102: started
+2026/02/19-00:48:45.421014 7f490fbff6c0 Level-0 table #1102: 11155 bytes OK
+2026/02/19-00:48:45.422777 7f490fbff6c0 Delete type=0 #1100
+2026/02/19-00:48:45.427422 7f490fbff6c0 Manual compaction at level-0 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)
+2026/02/19-00:48:45.433058 7f490fbff6c0 Manual compaction at level-1 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at '!items.effects!dmgStormPotionOf.98b5DWX7ulcMSPks' @ 13931 : 1
+2026/02/19-00:48:45.433067 7f490fbff6c0 Compacting 1@1 + 2@2 files
+2026/02/19-00:48:45.469100 7f490fbff6c0 Generated table #1103@1: 1426 keys, 2122879 bytes
+2026/02/19-00:48:45.478663 7f490fbff6c0 Generated table #1104@1: 558 keys, 303881 bytes
+2026/02/19-00:48:45.478706 7f490fbff6c0 Compacted 1@1 + 2@2 files => 2426760 bytes
+2026/02/19-00:48:45.480935 7f490fbff6c0 compacted to: files[ 0 0 2 0 0 0 0 ]
+2026/02/19-00:48:45.482006 7f490fbff6c0 Delete type=2 #1094
+2026/02/19-00:48:45.483195 7f490fbff6c0 Delete type=2 #1102
+2026/02/19-00:48:45.483338 7f490fbff6c0 Delete type=2 #1085
+2026/02/19-00:48:45.487301 7f490fbff6c0 Manual compaction at level-1 from '!items.effects!dmgStormPotionOf.98b5DWX7ulcMSPks' @ 13931 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)
