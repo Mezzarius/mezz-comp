@@ -240,4 +240,3 @@ Hooks.on("midi-qol.AttackRollComplete", async (workflow) => {
       sendChat(attacker, `<b>${embedded.name}</b> embedded in <b>${target.name}</b>.`);
     }
   });
-});
