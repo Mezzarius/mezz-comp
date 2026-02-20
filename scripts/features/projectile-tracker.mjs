@@ -161,7 +161,7 @@ Hooks.on("midi-qol.AttackRollComplete", async (workflow) => {
     	  await weapon.delete();
 	    }
       }
-    }
+    });
  
     if (hitTargets.size === 0) {
       const attackerToken = workflow.token;
