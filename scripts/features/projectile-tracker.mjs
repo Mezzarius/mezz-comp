@@ -74,7 +74,7 @@ async function dropProjectileLoot({ position, projectile, label }) {
   });
 }
 
-async function handleProjectileDropAsGM({ position, projectile, label }) {
+export async function handleProjectileDropAsGM({ position, projectile, label }) {
   if (!game.itempiles) return;
 
   await game.itempiles.API.createItemPile({
@@ -117,7 +117,7 @@ async function embedProjectileOnTarget({ targetActorId, embedded, attackerId }) 
   });
 }
 
-async function embedProjectileOnTargetAsGM({ targetActorId, embedded, attackerId }) {
+export async function embedProjectileOnTargetAsGM({ targetActorId, embedded, attackerId }) {
   const target = game.actors.get(targetActorId);
   if (!target) return;
 
@@ -132,7 +132,7 @@ async function embedProjectileOnTargetAsGM({ targetActorId, embedded, attackerId
   }
 }
 
-Hooks.on("midi-qol.AttackRollComplete", async (workflow) => {
+export async function handleProjectile(workflow){
   if (!getSetting("projectileEmbed")) return;
 
   safeRun("Projectile Embed", async () => {
@@ -161,8 +161,7 @@ Hooks.on("midi-qol.AttackRollComplete", async (workflow) => {
     	  await weapon.delete();
 	    }
       }
-    });
- 
+
     if (hitTargets.size === 0) {
       const attackerToken = workflow.token;
       const targetToken = workflow.targets?.first() ?? attackerToken;
@@ -240,3 +239,4 @@ Hooks.on("midi-qol.AttackRollComplete", async (workflow) => {
       sendChat(attacker, `<b>${embedded.name}</b> embedded in <b>${target.name}</b>.`);
     }
   });
+};

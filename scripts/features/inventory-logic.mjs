@@ -88,3 +88,118 @@ Hooks.on("updateItem", async (item, change, options, userId) => {
     await actor.unsetFlag("mezz-comp", "processingContainerBurst");
   }
 });
+
+/**
+ * ==========================================
+ *  PLAYER SHEET CHANGE MONITOR
+ * ==========================================
+ */
+
+async function notifyGM(message) {
+  if (game.user.isGM) {
+    ui.notifications.warn(message);
+    await appendToAuditLog(message);
+  } else {
+    game.socket.emit("module.mezz-comp", {
+      type: "GM_NOTIFY",
+      data: message
+    });
+  }
+}
+/**
+ * Actor-wide changes (HP, stats, gold, etc.)
+ */
+
+Hooks.on("updateActor", (actor, changes, options, userId) => {
+  const user = game.users.get(userId);
+  if (!user) return;
+
+  const flat = foundry.utils.flattenObject(changes);
+
+  const lines = [];
+
+  for (const [path, value] of Object.entries(flat)) {
+    if (!path.startsWith("system.")) continue;
+    if (path.startsWith("system._")) continue;
+
+    lines.push(`${path} → ${value}`);
+  }
+
+  if (!lines.length) return;
+
+  const message =
+    `🧾 ${user.name} modified ${actor.name}<br>` +
+    lines.join("<br>");
+
+  if (game.user.isGM) {
+    ui.notifications.warn(message);
+  } else {
+    game.socket.emit("module.mezz-comp", {
+      type: "GM_NOTIFY",
+      data: message
+    });
+  }
+});
+/**
+ * Item changes (quantity, equipped, etc.)
+ */
+Hooks.on("updateItem", (item, changes, options, userId) => {
+  const user = game.users.get(userId);
+  if (!user || user.isGM) return;
+
+  if (!item.actor) return;
+  if (options?.noHook) return;
+
+  notifyGM(`🎒 ${user.name} modified ${item.name} on ${item.actor.name}`);
+});
+
+
+Hooks.on("createItem", (item, options, userId) => {
+  const user = game.users.get(userId);
+  if (!user || user.isGM) return;
+  if (!item.actor) return;
+
+  notifyGM(`➕ ${user.name} added ${item.name} to ${item.actor.name}`);
+});
+
+
+Hooks.on("deleteItem", (item, options, userId) => {
+  const user = game.users.get(userId);
+  if (!user || user.isGM) return;
+  if (!item.actor) return;
+
+  notifyGM(`🗑 ${user.name} deleted ${item.name} from ${item.actor.name}`);
+});
+
+async function getAuditJournal() {
+  let journal = game.journal.getName("Mezz Audit Log");
+
+  if (!journal && game.user.isGM) {
+    journal = await JournalEntry.create({
+      name: "Mezz Audit Log",
+      pages: [{
+        name: "Log",
+        type: "text",
+        text: { content: "<h2>Mezz Audit Log</h2><hr>" }
+      }]
+    });
+  }
+
+  return journal;
+}
+
+async function appendToAuditLog(message) {
+  if (!game.user.isGM) return;
+
+  const journal = await getAuditJournal();
+  if (!journal) return;
+
+  const page = journal.pages.contents[0];
+  const time = new Date().toLocaleString();
+
+  const newContent =
+    page.text.content +
+    `<p><strong>[${time}]</strong><br>${message}</p><hr>`;
+
+  await page.update({ "text.content": newContent });
+}

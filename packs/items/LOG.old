@@ -1,17 +1,8 @@
-2026/02/18-22:43:00.106614 7f4badfbc6c0 Recovering log #1097
-2026/02/18-22:43:00.113742 7f4badfbc6c0 Delete type=0 #1097
-2026/02/18-22:43:00.113826 7f4badfbc6c0 Delete type=3 #1095
-2026/02/19-00:48:45.417843 7f490fbff6c0 Level-0 table #1102: started
-2026/02/19-00:48:45.421014 7f490fbff6c0 Level-0 table #1102: 11155 bytes OK
-2026/02/19-00:48:45.422777 7f490fbff6c0 Delete type=0 #1100
-2026/02/19-00:48:45.427422 7f490fbff6c0 Manual compaction at level-0 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)
-2026/02/19-00:48:45.433058 7f490fbff6c0 Manual compaction at level-1 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at '!items.effects!dmgStormPotionOf.98b5DWX7ulcMSPks' @ 13931 : 1
-2026/02/19-00:48:45.433067 7f490fbff6c0 Compacting 1@1 + 2@2 files
-2026/02/19-00:48:45.469100 7f490fbff6c0 Generated table #1103@1: 1426 keys, 2122879 bytes
-2026/02/19-00:48:45.478663 7f490fbff6c0 Generated table #1104@1: 558 keys, 303881 bytes
-2026/02/19-00:48:45.478706 7f490fbff6c0 Compacted 1@1 + 2@2 files => 2426760 bytes
-2026/02/19-00:48:45.480935 7f490fbff6c0 compacted to: files[ 0 0 2 0 0 0 0 ]
-2026/02/19-00:48:45.482006 7f490fbff6c0 Delete type=2 #1094
-2026/02/19-00:48:45.483195 7f490fbff6c0 Delete type=2 #1102
-2026/02/19-00:48:45.483338 7f490fbff6c0 Delete type=2 #1085
-2026/02/19-00:48:45.487301 7f490fbff6c0 Manual compaction at level-1 from '!items.effects!dmgStormPotionOf.98b5DWX7ulcMSPks' @ 13931 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)
+2026/02/25-20:13:08.613286 7fcb892196c0 Recovering log #1215
+2026/02/25-20:13:08.618904 7fcb892196c0 Delete type=0 #1215
+2026/02/25-20:13:08.618944 7fcb892196c0 Delete type=3 #1213
+2026/02/25-20:14:34.575449 7fc8a87ff6c0 Level-0 table #1220: started
+2026/02/25-20:14:34.575480 7fc8a87ff6c0 Level-0 table #1220: 0 bytes OK
+2026/02/25-20:14:34.578481 7fc8a87ff6c0 Delete type=0 #1218
+2026/02/25-20:14:34.584226 7fc8a87ff6c0 Manual compaction at level-0 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)
+2026/02/25-20:14:34.584378 7fc8a87ff6c0 Manual compaction at level-1 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)

@@ -3,14 +3,13 @@
  ******************************************************/
 import { registerSettings } from "./settings.mjs";
 import { log, safeRun } from "./utils.mjs";
-
+import { handleProjectile, handleProjectileDropAsGM, embedProjectileOnTargetAsGM } from "./features/projectile-tracker.mjs";
+import { handleFumble } from "./features/fumbles.mjs";
 // Submodules
 import "./features/adaptive.mjs";
 import "./features/dsn-fix.mjs";
 import "./features/inventory-logic.mjs";
 import "./features/level-up.mjs";
-import "./features/projectile-tracker.mjs";
-import "./features/fumbles.mjs";
 
 Hooks.once("init", () => {
   console.log("🧩 Mezz’s Comp | Initializing...");
@@ -35,8 +34,19 @@ Hooks.once("ready", () => {
       case "EMBED_PROJECTILE":
         await embedProjectileOnTargetAsGM(payload.data);
         break;
+		
+	  case "GM_NOTFY":
+	    ui.notifications.warn(payload.data);
+		await appendToAuditLog(payload.data);
+		break;
     }
   });
 });
 
-
+Hooks.on("midi-qol.AttackRollComplete", async (workflow) => {
+	console.log("AttackRollComplete fired", workflow);
+	if (!workflow) return;
+	const fumbleResult = await handleFumble(workflow);
+	if (fumbleResult?.cancelProjectile) return;
+	await handleProjectile(workflow);
+});
