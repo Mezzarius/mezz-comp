@@ -1,10 +1,11 @@
 /******************************************************
- * Mezz’s Comp (v13) — Main Entry
+ * Mezz's Comp (v13) — Main Entry
  ******************************************************/
 import { registerSettings } from "./settings.mjs";
 import { log, safeRun } from "./utils.mjs";
 import { handleProjectile, handleProjectileDropAsGM, embedProjectileOnTargetAsGM } from "./features/projectile-tracker.mjs";
 import { handleFumble } from "./features/fumbles.mjs";
+import { registerLockpickHooks } from "./features/lockpick-hooks.mjs";
 // Submodules
 import "./features/adaptive.mjs";
 import "./features/dsn-fix.mjs";
@@ -12,14 +13,18 @@ import "./features/inventory-logic.mjs";
 import "./features/level-up.mjs";
 
 Hooks.once("init", () => {
-  console.log("🧩 Mezz’s Comp | Initializing...");
+  console.log("🧩 Mezz's Comp | Initializing...");
   registerSettings();
 });
 
 Hooks.once("ready", async () => {
-  log("🧩 Mezz’s Comp | Module Ready.");
+  log("🧩 Mezz's Comp | Module Ready.");
   const version = game.modules.get("mezz-comp")?.version ?? "unknown";
-  ui.notifications.info(`Mezz’s Comp v${version} loaded.`);
+  ui.notifications.info(`Mezz's Comp v${version} loaded.`);
+
+  if (game.settings.get("mezz-comp", "lockpick")) {
+    registerLockpickHooks();
+  }
 });
 
 Hooks.once("ready", () => {

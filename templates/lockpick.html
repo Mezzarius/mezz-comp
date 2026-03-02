@@ -1,0 +1,23 @@
+{{!-- templates/lockpick.html --}}
+<div class="mezz-comp-lockpick-wrapper">
+  <div class="lockpick-header">
+    <span class="actor-name">{{actorName}}</span> is picking the lock
+    <span class="difficulty-badge difficulty-{{difficulty}}">{{difficulty}}</span>
+    <span class="skill-stat">SoH +{{skillBonus}} &nbsp;|&nbsp; snap {{snapPct}}% &nbsp;|&nbsp; {{timeRange}}</span>
+  </div>
+
+  {{!-- Explicit width/height attributes are critical — offsetWidth returns 0
+       if only CSS sizing is used and the element hasn't laid out yet. --}}
+  <canvas id="mezz-lockpick-canvas"
+          width="600"
+          height="400"
+          style="image-rendering: pixelated; image-rendering: crisp-edges; display:block; width:600px; height:400px;">
+  </canvas>
+
+  <div class="lockpick-controls-hint">
+    <kbd>WASD</kbd> / <kbd>↑↓←→</kbd> select pick &nbsp;|&nbsp;
+    <kbd>Space</kbd> flip pick &nbsp;|&nbsp;
+    <kbd>Enter</kbd> use pick &nbsp;|&nbsp;
+    <kbd>Esc</kbd> give up
+  </div>
+</div>

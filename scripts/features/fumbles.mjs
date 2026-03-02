@@ -3,289 +3,254 @@
 // dnd5e 5.2.4
 // =====================================================
 
+const DEBUG = false; // Set to true or use a module setting for debug logging
+function debugLog(...args) {
+  if (DEBUG) console.log("[mezz-comp|fumble]", ...args);
+}
+
 export async function handleFumble(workflow) {
-	console.log("HandleFumble called", workflow);
+  debugLog("HandleFumble called", workflow);
 
   if (!workflow?.actor || !workflow?.item || !workflow?.token) return;
   if (!workflow.isFumble) return;
+
+  // Guard: only process attack rolls, not saving throw workflows
+  if (!workflow.attackRoll) return;
+
   const actor = workflow.actor;
-  const item = workflow.item;
+  const item  = workflow.item;
   const token = workflow.token;
-  
-  const isSpell = workflow.activity?.attack.type.classification === "spell";
-  const rangeType = workflow.activity?.attack.type.value;
-  console.log(workflow.isFumble);
-  // Only once per turn (all attack types share same lock)
+
+  // Safe optional-chain all the way down to avoid throws on non-attack spells
+  const isSpell   = workflow.activity?.attack?.type?.classification === "spell";
+  const rangeType = workflow.activity?.attack?.type?.value;
 
   let type;
+  if      (isSpell  && rangeType === "melee")   type = "msak";
+  else if (isSpell  && rangeType === "ranged")  type = "rsak";
+  else if (!isSpell && rangeType === "melee")   type = "mwak";
+  else if (!isSpell && rangeType === "ranged")  type = "rwak";
 
-  if (isSpell && rangeType === "melee") type = "msak";
-  else if (isSpell && rangeType === "ranged") type = "rsak";
-  else if (!isSpell && rangeType === "melee") type = "mwak";
-  else if (!isSpell && rangeType === "ranged") type = "rwak";
+  debugLog("Resolved attack type:", type);
 
-  console.log("Resolved attack type:", type);console.log(type);
-  if (type === "mwak") {
-    await handleMeleeFumble(actor, item, token, workflow);
+  if (!type) {
+    console.warn("[mezz-comp|fumble] Could not resolve attack type — skipping fumble handling.");
+    return;
   }
 
-  else if (type === "rwak") {
-    await handleRangedFumble(actor, item, token, workflow);
-  }
-
-  else if (["msak", "rsak"].includes(type)) {
-    await handleSpellFumble(actor, item, token, workflow);
-  }
-
-};
-
-async function handleMeleeFumble(actor, item, token, workflow) {
-
-  const roll = await new Roll("1d10").roll({async:true});
-
-  switch (roll.total) {
-
-  case 1:
-    await dropWeaponScatter(actor, item, token);
-    await roll.toMessage({ flavor: "<strong>You lose your grip!</strong>" });
-    break;
-
-  case 2:
-    await actor.toggleStatusEffect("prone");
-    await roll.toMessage({ flavor: "<strong>You slip and fall prone!</strong>" });
-    break;
-
-  case 3:
-    await accidentalAdjacentAttack(actor, item, token, workflow);
-    await roll.toMessage({ flavor: "<strong>You strike the wrong target!</strong>" });
-    break;
-
-  case 4:
-    await selfDamageBaseDie(actor, item);
-    await roll.toMessage({ flavor: "<strong>You cut yourself!</strong>" });
-    break;
-
-  case 5:
-    await applyDisarm(actor);
-    await roll.toMessage({ flavor: "<strong>Your footing falters!</strong>" });
-    break;
-
-  case 6:
-    await applyTurnSlow(actor);
-    await roll.toMessage({ flavor: "<strong>You overextend your swing!</strong>" });
-    break;
-
-  case 7:
-    await damageWeapon(item);
-    await roll.toMessage({ flavor: "<strong>Your weapon is damaged!</strong>" });
-    break;
-
-  case 8:
-    await shoveSelfBack(token);
-    await roll.toMessage({ flavor: "<strong>The recoil pushes you backward!</strong>" });
-    break;
-
-  case 9:
-    await applyDistracted(actor);
-    await roll.toMessage({ flavor: "<strong>You are left off balance!</strong>" });
-    break;
-
-  case 10:
-    await applyTurnLock(actor);
-    await roll.toMessage({ flavor: "<strong>Your turn ends abruptly!</strong>" });
-    break;
+  if      (type === "mwak")                    await handleMeleeFumble(actor, item, token, workflow);
+  else if (type === "rwak")                    await handleRangedFumble(actor, item, token, workflow);
+  else if (["msak", "rsak"].includes(type))    await handleSpellFumble(actor, item, token, workflow);
 }
 
+// ─────────────────────────────────────────────────────────
+//  Shared helper
+// ─────────────────────────────────────────────────────────
+
+async function rollFumbleTable() {
+  return new Roll("1d10").roll({ async: true });
+}
+
+// ─────────────────────────────────────────────────────────
+//  Attack-type handlers
+// ─────────────────────────────────────────────────────────
+
+async function handleMeleeFumble(actor, item, token, workflow) {
+  const roll = await rollFumbleTable();
+
+  // Post the flavor message first so it always appears even if an effect throws
+  await roll.toMessage({ flavor: meleeFlavor(roll.total) });
+
+  try {
+    switch (roll.total) {
+      case 1:  await dropWeaponScatter(actor, item, token); break;
+      case 2:  await actor.toggleStatusEffect("prone"); break;
+      case 3:  await accidentalAdjacentAttack(actor, item, token, workflow); break;
+      case 4:  await selfDamageBaseDie(actor, item); break;
+      case 5:  await applyDisarm(actor, item); break;  // BUG FIX: was missing `item`
+      case 6:  await applyTurnSlow(actor); break;
+      case 7:  await damageWeapon(item); break;
+      case 8:  await shoveSelfBack(token); break;
+      case 9:  await applyDistracted(actor); break;
+      case 10: break; // applyTurnLock applied once below
+    }
+  } catch (err) {
+    console.error("[mezz-comp|fumble] Melee fumble effect error:", err);
+  }
+
+  // Apply turn lock once, unconditionally — not inside the switch (BUG FIX: was double-applied on case 10)
   await applyTurnLock(actor);
+}
+
+function meleeFlavor(n) {
+  return [
+    "",
+    "<strong>You lose your grip!</strong>",
+    "<strong>You slip and fall prone!</strong>",
+    "<strong>You strike the wrong target!</strong>",
+    "<strong>You cut yourself!</strong>",
+    "<strong>Your footing falters!</strong>",
+    "<strong>You overextend your swing!</strong>",
+    "<strong>Your weapon is damaged!</strong>",
+    "<strong>The recoil pushes you backward!</strong>",
+    "<strong>You are left off balance!</strong>",
+    "<strong>Your turn ends abruptly!</strong>",
+  ][n] ?? "";
 }
 
 async function handleRangedFumble(actor, item, token, workflow) {
+  const roll = await rollFumbleTable();
+  await roll.toMessage({ flavor: rangedFlavor(roll.total) });
 
-  const roll = await new Roll("1d10").roll({async:true});
-
-  switch (roll.total) {
-
-  case 1:
-    await dropWeaponScatter(actor, item, token);
-    await roll.toMessage({ flavor: "<strong>You fumble your weapon!</strong>" });
-    break;
-
-  case 2:
-    await actor.toggleStatusEffect("prone");
-    await roll.toMessage({ flavor: "<strong>You trip while firing!</strong>" });
-    break;
-
-  case 3:
-    await accidentalRandomAttack(actor, item, workflow);
-    await roll.toMessage({ flavor: "<strong>Your shot goes wildly astray!</strong>" });
-    break;
-
-  case 4:
-    await selfDamageBaseDie(actor, item);
-    await roll.toMessage({ flavor: "<strong>The weapon misfires painfully!</strong>" });
-    break;
-
-  case 5:
-    await breakAmmo(workflow);
-    await roll.toMessage({ flavor: "<strong>Your ammunition is ruined!</strong>" });
-    break;
-
-  case 6:
-    await applyDistracted(actor);
-    await roll.toMessage({ flavor: "<strong>You lose focus!</strong>" });
-    break;
-
-  case 7:
-    await damageWeapon(item);
-    await roll.toMessage({ flavor: "<strong>Your weapon mechanism jams!</strong>" });
-    break;
-
-  case 8:
-    await applyTurnSlow(actor);
-    await roll.toMessage({ flavor: "<strong>You must recover your stance!</strong>" });
-    break;
-
-  case 9:
-    await dropProjectileScatter(token);
-    await roll.toMessage({ flavor: "<strong>Your projectile lands far off target!</strong>" });
-    break;
-
-  case 10:
-    await applyTurnLock(actor);
-    await roll.toMessage({ flavor: "<strong>Your turn ends in embarrassment!</strong>" });
-    break;
-}
+  try {
+    switch (roll.total) {
+      case 1:  await dropWeaponScatter(actor, item, token); break;
+      case 2:  await actor.toggleStatusEffect("prone"); break;
+      case 3:  await accidentalRandomAttack(actor, item, workflow); break;
+      case 4:  await selfDamageBaseDie(actor, item); break;
+      case 5:  await breakAmmo(workflow); break;
+      case 6:  await applyDistracted(actor); break;
+      case 7:  await damageWeapon(item); break;
+      case 8:  await applyTurnSlow(actor); break;
+      case 9:  await dropProjectileScatter(token, workflow); break;  // BUG FIX: pass ammo
+      case 10: break;
+    }
+  } catch (err) {
+    console.error("[mezz-comp|fumble] Ranged fumble effect error:", err);
+  }
 
   await applyTurnLock(actor);
+}
+
+function rangedFlavor(n) {
+  return [
+    "",
+    "<strong>You fumble your weapon!</strong>",
+    "<strong>You trip while firing!</strong>",
+    "<strong>Your shot goes wildly astray!</strong>",
+    "<strong>The weapon misfires painfully!</strong>",
+    "<strong>Your ammunition is ruined!</strong>",
+    "<strong>You lose focus!</strong>",
+    "<strong>Your weapon mechanism jams!</strong>",
+    "<strong>You must recover your stance!</strong>",
+    "<strong>Your projectile lands far off target!</strong>",
+    "<strong>Your turn ends in embarrassment!</strong>",
+  ][n] ?? "";
 }
 
 async function handleSpellFumble(actor, item, token, workflow) {
+  const roll = await rollFumbleTable();
+  await roll.toMessage({ flavor: spellFlavor(roll.total) });
 
-  const roll = await new Roll("1d10").roll({async:true});
+  try {
+    switch (roll.total) {
+      case 1:  await selfDamageBaseDie(actor, item); break;
+      case 2:  await accidentalRandomAttack(actor, item, workflow); break;
+      case 3:  await removeConcentration(actor); break;
+      case 4:  await applyTurnSlow(actor); break;
+      case 5:  await expendSpellSlot(item); break;
+      case 6:  await applyDistracted(actor); break;
+      case 7:  await randomSpellEffect(actor); break;
+      case 8:  await actor.toggleStatusEffect("prone"); break;
+      case 9:  break;
+      case 10: await silenceCaster(actor); break;
+    }
+  } catch (err) {
+    console.error("[mezz-comp|fumble] Spell fumble effect error:", err);
+  }
 
-switch (roll.total) {
-
-  case 1:
-    await selfDamageBaseDie(actor, item);
-    await roll.toMessage({ flavor: "<strong>Arcane backlash!</strong>" });
-    break;
-
-  case 2:
-    await accidentalRandomAttack(actor, item, workflow);
-    await roll.toMessage({ flavor: "<strong>The spell lashes out unpredictably!</strong>" });
-    break;
-
-  case 3:
-    await removeConcentration(actor);
-    await roll.toMessage({ flavor: "<strong>You lose concentration!</strong>" });
-    break;
-
-  case 4:
-    await applyTurnSlow(actor);
-    await roll.toMessage({ flavor: "<strong>You struggle to regain control!</strong>" });
-    break;
-
-  case 5:
-    await expendSpellSlot(item);
-    await roll.toMessage({ flavor: "<strong>The spell slot is wasted!</strong>" });
-    break;
-
-  case 6:
-    await applyDistracted(actor);
-    await roll.toMessage({ flavor: "<strong>Your mind reels!</strong>" });
-    break;
-
-  case 7:
-    await randomSpellEffect(actor);
-    await roll.toMessage({ flavor: "<strong>Wild magical surge!</strong>" });
-    break;
-
-  case 8:
-    await actor.toggleStatusEffect("prone");
-    await roll.toMessage({ flavor: "<strong>The spell explodes beneath you!</strong>" });
-    break;
-
-  case 9:
-    await applyTurnLock(actor);
-    await roll.toMessage({ flavor: "<strong>Your turn collapses into chaos!</strong>" });
-    break;
-
-  case 10:
-    await silenceCaster(actor);
-    await roll.toMessage({ flavor: "<strong>Your voice fails you!</strong>" });
-    break;
-}
   await applyTurnLock(actor);
 }
 
-async function dropWeaponScatter(actor, item, token) {
+function spellFlavor(n) {
+  return [
+    "",
+    "<strong>Arcane backlash!</strong>",
+    "<strong>The spell lashes out unpredictably!</strong>",
+    "<strong>You lose concentration!</strong>",
+    "<strong>You struggle to regain control!</strong>",
+    "<strong>The spell slot is wasted!</strong>",
+    "<strong>Your mind reels!</strong>",
+    "<strong>Wild magical surge!</strong>",
+    "<strong>The spell explodes beneath you!</strong>",
+    "<strong>Your turn collapses into chaos!</strong>",
+    "<strong>Your voice fails you!</strong>",
+  ][n] ?? "";
+}
 
+// ─────────────────────────────────────────────────────────
+//  Effect helpers
+// ─────────────────────────────────────────────────────────
+
+async function dropWeaponScatter(actor, item, token) {
   if (!game.itempiles) return;
 
-  const weapon = item;
+  const weaponData = item.toObject();
   await actor.deleteEmbeddedDocuments("Item", [item.id]);
 
-  const angle = Math.random() * 360;
-  const distance = 5 + Math.random() * 5;
-  const radians = angle * (Math.PI / 180);
-
-  const dropX = token.center.x + Math.cos(radians) * canvas.grid.size * (distance / 5);
-  const dropY = token.center.y + Math.sin(radians) * canvas.grid.size * (distance / 5);
+  const angle    = Math.random() * 2 * Math.PI;
+  const distance = (1 + Math.random()) * canvas.grid.size; // 1–2 grid squares
 
   await game.itempiles.API.createItemPile({
-    position: { x: dropX, y: dropY },
-    items: [weapon]
+    position: {
+      x: token.center.x + Math.cos(angle) * distance,
+      y: token.center.y + Math.sin(angle) * distance,
+    },
+    items: [weaponData],
   });
 }
 
 async function selfDamageBaseDie(actor, item) {
-  const die = item.system.damage.parts?.[0]?.[0] || "1d4";
-  const roll = await new Roll(die).roll({async:true});
-  await roll.toMessage({flavor:`Self-inflicted damage!`});
+  // dnd5e 5.x: prefer activity damage parts; fall back to legacy item damage
+  const die =
+    workflow?.activity?.damage?.parts?.[0]?.number
+      ? `${workflow.activity.damage.parts[0].number}${workflow.activity.damage.parts[0].denomination}`
+      : item.system.damage?.parts?.[0]?.[0]
+      ?? "1d4";
+
+  const roll = await new Roll(die).roll({ async: true });
+  await roll.toMessage({ flavor: "Self-inflicted damage!" });
   await actor.applyDamage(roll.total);
 }
 
 async function damageWeapon(item) {
+  if (item.system.properties?.mgc) return; // magical weapons are unaffected
 
-  if (item.system.properties?.mgc) return;
-
-  const current = item.getFlag("mezz-comp", "damageLevel") || 0;
-  const newLevel = current + 1;
+  const current  = item.getFlag("mezz-comp", "damageLevel") ?? 0;
+  const newLevel = Math.min(current + 1, 2); // cap at 2 (broken)
 
   await item.setFlag("mezz-comp", "damageLevel", newLevel);
 
-  if (newLevel === 1)
-    ChatMessage.create({content:`${item.name} is damaged.`});
-
-  if (newLevel >= 2)
-    ChatMessage.create({content:`${item.name} is broken.`});
+  const label = newLevel === 1 ? `${item.name} is damaged.` : `${item.name} is broken!`;
+  ChatMessage.create({ content: label });
 }
 
 async function accidentalAdjacentAttack(actor, item, token, workflow) {
-
+  // Use grid units for distance check rather than hardcoding 5 pixels (BUG FIX)
   const adjacent = canvas.tokens.placeables.filter(t => {
     if (t.id === token.id) return false;
-    return canvas.grid.measureDistance(token.center, t.center) <= 5;
+    const dist = canvas.grid.measureDistance(token.center, t.center, { gridSpaces: true });
+    return dist <= 1; // 1 grid square (5 ft by default, but respects grid scale)
   });
 
   if (!adjacent.length) return;
 
   const target = adjacent[Math.floor(Math.random() * adjacent.length)];
 
-  const attackBonus = workflow.attackRoll.total - 1;
-  const roll = await new Roll(`1d20 + ${attackBonus}`).roll({async:true});
-  await roll.toMessage({flavor:`Accidental attack vs ${target.name}`});
+  // Derive the attack bonus from the original roll total minus the d20 face value
+  const attackBonus = (workflow.attackRoll?.total ?? 0) - (workflow.d20AttackRoll?.total ?? workflow.d20AttackRoll ?? 0);
+  const roll = await new Roll(`1d20 + ${attackBonus}`).roll({ async: true });
+  await roll.toMessage({ flavor: `Accidental attack vs ${target.name}` });
 
-  if (roll.total >= target.actor.system.attributes.ac.value)
+  if (roll.total >= (target.actor?.system?.attributes?.ac?.value ?? Infinity)) {
     await item.rollDamage();
+  }
 }
 
 async function accidentalRandomAttack(actor, item, workflow) {
-
   const attackerToken = workflow.token;
   if (!attackerToken) return;
 
-  // Find valid nearby targets (excluding self)
   const possibleTargets = canvas.tokens.placeables.filter(t => {
     if (!t.actor) return false;
     if (t.id === attackerToken.id) return false;
@@ -297,70 +262,62 @@ async function accidentalRandomAttack(actor, item, workflow) {
 
   const target = possibleTargets[Math.floor(Math.random() * possibleTargets.length)];
 
-  // Re-roll attack using original attack bonus
-  const attackBonus = workflow.attackRoll?.total - workflow.d20AttackRoll;
-
+  // BUG FIX: use .total on d20AttackRoll to avoid NaN
+  const attackBonus = (workflow.attackRoll?.total ?? 0) - (workflow.d20AttackRoll?.total ?? workflow.d20AttackRoll ?? 0);
   const roll = await new Roll(`1d20 + ${attackBonus}`).roll({ async: true });
+  await roll.toMessage({ flavor: `Accidental attack vs ${target.name}` });
 
-  await roll.toMessage({
-    flavor: `Accidental attack vs ${target.name}`
-  });
-
-  if (roll.total >= target.actor.system.attributes.ac.value) {
+  if (roll.total >= (target.actor?.system?.attributes?.ac?.value ?? Infinity)) {
     await item.rollDamage({ workflowOptions: { targetUuids: [target.document.uuid] } });
   }
 }
 
 async function applyTurnLock(actor) {
-
   await actor.createEmbeddedDocuments("ActiveEffect", [{
-    name: "Fumbled Turn",
-    icon: "icons/svg/daze.svg",
+    name:   "Fumbled Turn",
+    icon:   "icons/svg/stoned.svg",
     origin: actor.uuid,
     duration: { rounds: 0, turns: 1 },
     changes: [
-      {
-        key: "flags.midi-qol.disadvantage.attack.all",
-        mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 1
-      },
-      {
-        key: "flags.midi-qol.noReaction",
-        mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 1
-      }
-    ]
+      { key: "flags.midi-qol.disadvantage.attack.all", mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE, value: 1 },
+      { key: "flags.midi-qol.noReaction",              mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE, value: 1 },
+    ],
   }]);
 }
 
 async function applyTurnSlow(actor) {
   await actor.createEmbeddedDocuments("ActiveEffect", [{
-    name: "Off Balance",
-    icon: "icons/svg/daze.svg",
+    name:   "Off Balance",
+    icon:   "icons/svg/falling.svg",
+    origin: actor.uuid,
     duration: { rounds: 0, turns: 1 },
     changes: [{
-      key: "system.attributes.movement.all",
-      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-      value: -10
-    }]
+      key:   "system.attributes.movement.all",
+      mode:  CONST.ACTIVE_EFFECT_MODES.ADD,
+      value: -10,
+    }],
   }]);
 }
 
 async function applyDistracted(actor) {
   await actor.createEmbeddedDocuments("ActiveEffect", [{
-    name: "Distracted",
-    icon: "icons/svg/daze.svg",
+    name:   "Distracted",
+    icon:   "icons/svg/eye.svg",
+    origin: actor.uuid,
     duration: { rounds: 0, turns: 1 },
     changes: [{
-      key: "flags.midi-qol.disadvantage.attack.all",
-      mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-      value: 1
-    }]
+      key:   "flags.midi-qol.disadvantage.attack.all",
+      mode:  CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      value: 1,
+    }],
   }]);
 }
 
 async function removeConcentration(actor) {
-  const conc = actor.effects.find(e => e.name === "Concentrating");
+  // BUG FIX: match by status ID rather than locale-dependent name
+  const conc = actor.effects.find(e =>
+    e.statuses?.has("concentrating") || e.name === "Concentrating"
+  );
   if (conc) await conc.delete();
 }
 
@@ -372,49 +329,53 @@ async function breakAmmo(workflow) {
 }
 
 async function shoveSelfBack(token) {
-  const angle = Math.random() * 2 * Math.PI;
+  const angle    = Math.random() * 2 * Math.PI;
   const distance = canvas.grid.size;
-  await token.document.update({
-    x: token.x + Math.cos(angle) * distance,
-    y: token.y + Math.sin(angle) * distance
-  });
+
+  // BUG FIX: clamp to canvas bounds so we can't shove off-screen
+  const newX = Math.clamped(token.x + Math.cos(angle) * distance, 0, canvas.dimensions.width  - token.w);
+  const newY = Math.clamped(token.y + Math.sin(angle) * distance, 0, canvas.dimensions.height - token.h);
+
+  await token.document.update({ x: newX, y: newY });
 }
 
 async function applyDisarm(actor, item) {
-  if (!item) return;
+  if (!item) return; // BUG FIX: guard was correct but caller was missing the arg — now both are fixed
 
   await item.update({ "system.equipped": false });
-
-  ChatMessage.create({
-    content: `<strong>${actor.name} is disarmed!</strong>`
-  });
+  ChatMessage.create({ content: `<strong>${actor.name} is disarmed!</strong>` });
 }
 
-async function dropProjectileScatter(token) {
+async function dropProjectileScatter(token, workflow) {
   if (!game.itempiles) return;
 
-  const angle = Math.random() * 2 * Math.PI;
+  // BUG FIX: include the actual ammunition item instead of an empty array
+  const ammo = workflow?.ammunition;
+  const items = ammo ? [ammo.toObject()] : [];
+
+  const angle    = Math.random() * 2 * Math.PI;
   const distance = canvas.grid.size * 2;
 
-  const dropX = token.center.x + Math.cos(angle) * distance;
-  const dropY = token.center.y + Math.sin(angle) * distance;
-
   await game.itempiles.API.createItemPile({
-    position: { x: dropX, y: dropY },
-    items: []
+    position: {
+      x: token.center.x + Math.cos(angle) * distance,
+      y: token.center.y + Math.sin(angle) * distance,
+    },
+    items,
   });
 }
 
 async function silenceCaster(actor) {
   await actor.createEmbeddedDocuments("ActiveEffect", [{
-    name: "Spell Disrupted",
-    icon: "icons/svg/silenced.svg",
+    name:   "Spell Disrupted",
+    icon:   "icons/svg/silenced.svg",
+    origin: actor.uuid,
     duration: { rounds: 0, turns: 1 },
     changes: [{
-      key: "flags.midi-qol.noSpell",
-      mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-      value: 1
-    }]
+      key:   "flags.midi-qol.noSpell",
+      mode:  CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      value: 1,
+    }],
   }]);
 }
 
@@ -426,10 +387,11 @@ async function expendSpellSlot(item) {
   if (!actor) return;
 
   const slotPath = `system.spells.spell${level}.value`;
-  const maxPath  = `system.spells.spell${level}.max`;
+  const current  = foundry.utils.getProperty(actor, slotPath);
+  if (current > 0) await actor.update({ [slotPath]: current - 1 });
+}
 
-  const current = foundry.utils.getProperty(actor, slotPath);
-  if (current > 0) {
-    await actor.update({ [slotPath]: current - 1 });
-  }
+// Placeholder — implement wild magic surge table as desired
+async function randomSpellEffect(actor) {
+  ChatMessage.create({ content: `<strong>${actor.name} triggers a wild magic surge!</strong>` });
 }

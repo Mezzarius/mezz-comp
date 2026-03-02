@@ -1,0 +1,79 @@
+/* =====================================================
+   MEZZ-COMP LOCKPICK STYLES
+   ===================================================== */
+
+#mezz-comp-lockpick .window-content {
+  padding: 0;
+  background: #1a0a1a;
+  overflow: hidden;
+}
+
+.mezz-comp-lockpick-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.lockpick-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #2a0a2a;
+  color: #ddd;
+  font-size: 0.85em;
+  border-bottom: 1px solid #440044;
+}
+
+.lockpick-header .actor-name {
+  font-weight: bold;
+  color: #ffd700;
+}
+
+.difficulty-badge {
+  margin-left: auto;
+  padding: 1px 8px;
+  border-radius: 3px;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.difficulty-badge.difficulty-easy   { background: #1a5c1a; color: #7fff7f; }
+.difficulty-badge.difficulty-normal { background: #1a3a5c; color: #7fbfff; }
+.difficulty-badge.difficulty-hard   { background: #5c3a1a; color: #ffbf7f; }
+.difficulty-badge.difficulty-deadly { background: #5c1a1a; color: #ff7f7f; }
+
+#mezz-lockpick-canvas {
+  flex: 1;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: crosshair;
+  background: #550055;
+}
+
+.lockpick-controls-hint {
+  padding: 5px 10px;
+  background: #1a0a1a;
+  color: #888;
+  font-size: 0.75em;
+  text-align: center;
+  border-top: 1px solid #330033;
+}
+
+.lockpick-controls-hint kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  background: #333;
+  color: #ddd;
+  border: 1px solid #555;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: monospace;
+}
+
+/* Chat message result styles */
+.mezz-comp.lockpick-result {
+  border-left: 3px solid #884488;
+  padding-left: 8px;
+  margin: 2px 0;
+}
