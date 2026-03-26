@@ -1,7 +1,7 @@
 {
   "id": "mezz-comp",
   "title": "Mezz's Comp",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "compatibility": {
     "minimum": "12",
     "verified": "13"
@@ -38,7 +38,8 @@
   ],
   "styles": [
     "styles/mezz-comp.css",
-    "styles/lockpick.css"
+    "styles/lockpick.css",
+    "styles/mezz-paperdoll.css"
   ],
   "socket": true,
   "packs": [
