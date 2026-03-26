@@ -12,42 +12,64 @@ const ASSET_PATH = getModuleAsset("lockpick");
 //  Skill scaling
 // ─────────────────────────────────────────────────────────
 
-const TIME_PER_BONUS             = 3;     // extra seconds per +1 SoH bonus
-const SNAP_REDUCTION_PER_BONUS   = 0.04;  // snap chance reduced 4% per +1
-const MIN_SNAP_CHANCE            = 0.05;  // floor: 5% even at very high bonus
-const TUMBLER_REDUCTION_PER_BONUS = 0.15; // fractional max-tumbler reduction per +1
+// ── Snap chance (picking the wrong tumbler) ─────────────
+// Reduced from original — picks are harder to break.
+const BASE_SNAP_CHANCE         = 0.25;  // base 25% on a failed attempt (was 0.5)
+const SNAP_REDUCTION_PER_BONUS = 0.03;  // 3% per +1 SoH (was 0.04)
+const MIN_SNAP_CHANCE          = 0.03;  // floor: 3% (was 0.05)
 
-const BASE_DIFFICULTY = {
-  easy:   { minTime: 40, maxTime: 70, minTumblers: 2, maxTumblers: 4, numLocks: 4 },
-  normal: { minTime: 20, maxTime: 50, minTumblers: 3, maxTumblers: 6, numLocks: 6 },
-  hard:   { minTime: 12, maxTime: 38, minTumblers: 4, maxTumblers: 7, numLocks: 6 },
-  deadly: { minTime:  8, maxTime: 25, minTumblers: 5, maxTumblers: 8, numLocks: 8 },
+// ── Time: base pool + bonus per roll margin ───────────
+// margin = rollTotal - dc; a high roll gives significantly more time.
+const BASE_TIME_BY_DIFFICULTY = {
+  easy:   35,
+  normal: 25,
+  hard:   18,
+  deadly: 12,
+};
+const TIME_PER_MARGIN = 4;  // extra seconds per point the roll beats the DC
+const TIME_PER_BONUS  = 2;  // extra seconds per +1 SoH (stacks on top of margin)
+
+// ── Tumblers: driven directly by DC ──────────────────
+// numTumblers = clamp(floor(dc / 3), 2, 8)
+// DC 9→3  DC 12→4  DC 15→5  DC 18→6  DC 21→7  DC 24→8
+function tumblerCountFromDC(dc) {
+  return Math.min(8, Math.max(2, Math.floor(dc / 3)));
+}
+
+const NUM_LOCKS_BY_DIFFICULTY = {
+  easy:   1,
+  normal: 1,
+  hard:   1,
+  deadly: 1,
 };
 
 /**
- * Merge the DC-derived difficulty tier with the actor's Sleight of Hand bonus
- * to produce final game settings.
+ * Build final game settings from DC, skill bonus, and the actual roll result.
  *
- * Higher skillBonus → more time, lower snap chance, fewer max tumblers.
+ * @param {number} dc
+ * @param {number} skillBonus  - actor's full SoH modifier
+ * @param {number} rollTotal   - the d20 roll total (scales time)
  */
-function buildGameSettings(difficulty, skillBonus) {
-  const base        = BASE_DIFFICULTY[difficulty] ?? BASE_DIFFICULTY.normal;
+function buildGameSettings(dc, skillBonus, rollTotal) {
+  const difficulty  = deriveDifficulty(dc);
   const bonus       = Math.max(0, skillBonus);
-  const timeBonus   = Math.round(bonus * TIME_PER_BONUS);
-  const tumblerCut  = Math.floor(bonus * TUMBLER_REDUCTION_PER_BONUS);
-  const snapChance  = Math.max(MIN_SNAP_CHANCE, 0.5 - bonus * SNAP_REDUCTION_PER_BONUS);
+  const margin      = Math.max(0, rollTotal - dc);
+  const baseTime    = BASE_TIME_BY_DIFFICULTY[difficulty] ?? 25;
+  const totalTime   = Math.round(baseTime + margin * TIME_PER_MARGIN + bonus * TIME_PER_BONUS);
+  const snapChance  = Math.max(MIN_SNAP_CHANCE, BASE_SNAP_CHANCE - bonus * SNAP_REDUCTION_PER_BONUS);
+  const numTumblers = tumblerCountFromDC(dc);
 
-  log(`Lockpick settings | difficulty=${difficulty} skillBonus=${skillBonus} snapChance=${(snapChance*100).toFixed(0)}% timeBonus=+${timeBonus}s`);
+  log(`Lockpick settings | dc=${dc} difficulty=${difficulty} roll=${rollTotal} margin=+${margin} time=${totalTime}s tumblers=${numTumblers} snap=${(snapChance*100).toFixed(0)}%`);
 
   return {
-    minTime:     base.minTime  + timeBonus,
-    maxTime:     base.maxTime  + timeBonus,
-    minTumblers: base.minTumblers,
-    maxTumblers: Math.max(base.minTumblers, base.maxTumblers - tumblerCut),
-    numLocks:    base.numLocks,
+    totalTime,
+    numTumblers,
+    numLocks:   NUM_LOCKS_BY_DIFFICULTY[difficulty] ?? 1,
     snapChance,
     skillBonus,
+    rollTotal,
     difficulty,
+    dc,
   };
 }
 
@@ -70,35 +92,35 @@ function deriveDifficulty(dc = 15) {
  * @param {object} [options]
  * @param {number} [options.dc=15]         Lock DC
  * @param {number} [options.skillBonus=0]  Actor's full SoH modifier
- * @returns {Promise<{success: boolean, locksCleared: number, picksLeft: number, aborted?: boolean}>}
+ * @param {number} [options.rollTotal=0]   The actual d20 roll result (scales time)
+ * @returns {Promise<{success: boolean, locksCleared: number, picksLeft: number, aborted?: boolean, skipped?: boolean}>}
  */
 export async function openLockpickMinigame(actor, item, options = {}) {
-  const dc         = options.dc          ?? 15;
-  const skillBonus = options.skillBonus  ?? 0;
-  const difficulty = deriveDifficulty(dc);
-  const settings   = buildGameSettings(difficulty, skillBonus);
+  const dc         = options.dc         ?? 15;
+  const skillBonus = options.skillBonus ?? 0;
+  const rollTotal  = options.rollTotal  ?? 0;
+  const settings   = buildGameSettings(dc, skillBonus, rollTotal);
 
   return new Promise((resolve) => {
-    const snapPct   = Math.round(settings.snapChance * 100);
-    const timeRange = `${settings.minTime}–${settings.maxTime}s`;
+    const snapPct = Math.round(settings.snapChance * 100);
 
-    // Use Dialog — the simplest Foundry UI primitive, always works.
-    // No template file, no Handlebars, no _renderInner override needed.
     const dlgContent = `
       <div style="background:#000;margin:-4px -4px 0;padding:0;overflow:hidden;">
         <div style="padding:5px 10px;background:#111;color:#888;font-size:11px;border-bottom:1px solid #222;">
           <strong style="color:#ccc;">${actor.name}</strong> &nbsp;·&nbsp;
           <span style="color:#e8a020;text-transform:uppercase;">${settings.difficulty}</span>
-          &nbsp;·&nbsp; SoH +${settings.skillBonus} &nbsp;·&nbsp;
-          snap ${snapPct}% &nbsp;·&nbsp; ${timeRange}
+          &nbsp;·&nbsp; SoH +${settings.skillBonus}
+          &nbsp;·&nbsp; Roll ${settings.rollTotal} vs DC ${settings.dc}
+          &nbsp;·&nbsp; snap ${snapPct}%
+          &nbsp;·&nbsp; ${settings.totalTime}s
         </div>
         <canvas id="mezz-lockpick-canvas" width="960" height="600"
           style="display:block;width:960px;height:600px;
                  image-rendering:pixelated;image-rendering:crisp-edges;"></canvas>
         <div style="padding:3px 8px;background:#0d0d0d;color:#444;font-size:10px;
                     border-top:1px solid #1a1a1a;text-align:center;">
-          WASD/↑↓←→ select &nbsp;·&nbsp; Space flip &nbsp;·&nbsp;
-          Enter use &nbsp;·&nbsp; Esc give up
+          Click pick to select &nbsp;·&nbsp; Left-click use &nbsp;·&nbsp;
+          Right-click flip &nbsp;·&nbsp; Esc accept roll result
         </div>
       </div>`;
 
@@ -131,7 +153,9 @@ export async function openLockpickMinigame(actor, item, options = {}) {
       close: () => {
         if (!resolved) {
           if (game) game.abort();
-          resolve({ success: false, locksCleared: 0, picksLeft: 0, aborted: true });
+          // ESC / closing the dialog skips the minigame and accepts the raw roll.
+          const rollSuccess = settings.rollTotal >= settings.dc;
+          resolve({ success: rollSuccess, locksCleared: 0, picksLeft: 0, skipped: true });
         }
       },
     }, { width: 1000, height: 680, resizable: false, classes: ["mezz-comp-lockpick"] });
@@ -179,7 +203,9 @@ class LockpickGame {
     this._picture = null;
     this._scale   = 1;
 
-    this._boundKeyPress = this._keyPress.bind(this);
+    this._boundKeyPress  = this._keyPress.bind(this);
+    this._boundMouseDown = this._mouseDown.bind(this);
+    this._boundContextMenu = this._contextMenu.bind(this);
   }
 
   // ── Lifecycle ──────────────────────────────────────────
@@ -191,6 +217,8 @@ class LockpickGame {
    */
   async start() {
     document.addEventListener("keydown", this._boundKeyPress);
+    this.canvas.addEventListener("mousedown", this._boundMouseDown);
+    this.canvas.addEventListener("contextmenu", this._boundContextMenu);
 
     // Force explicit pixel size — prevents offsetWidth returning 0 before layout
     this.canvas.width  = 960;
@@ -236,6 +264,8 @@ class LockpickGame {
     this.aborted  = true;
     this.finished = true;
     document.removeEventListener("keydown", this._boundKeyPress);
+    this.canvas.removeEventListener("mousedown", this._boundMouseDown);
+    this.canvas.removeEventListener("contextmenu", this._boundContextMenu);
   }
 
   // ── Assets ─────────────────────────────────────────────
@@ -311,8 +341,58 @@ class LockpickGame {
 
   _keyPress(e) {
     if (e.altKey || e.shiftKey || e.ctrlKey || e.metaKey) return;
-    const valid = ["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d"," ","Enter","Escape"];
-    if (valid.includes(e.key)) { e.preventDefault(); this.kbQueue.push(e.key); }
+    // Only ESC is handled via keyboard now; everything else is mouse.
+    if (e.key === "Escape") { e.preventDefault(); this.kbQueue.push("Escape"); }
+  }
+
+  /**
+   * Convert a canvas mouse position to a pick grid index.
+   * The pick grid is 10 picks in a 3-col layout (see _display).
+   * Returns -1 if the click didn't land on any pick.
+   */
+  _pickIndexAtPoint(canvasX, canvasY) {
+    const s = this._scale;
+    for (let i = 0; i < 10; i++) {
+      const row = Math.floor((i + 2) / 3);
+      const col = (i + 2) % 3;
+      const bx  = (24 + col * 96) * s;
+      const by  = (112 + row * 16) * s;
+      const bw  = 76 * s;  // pick total width (15+46+15)
+      const bh  = 14 * s;
+      if (canvasX >= bx && canvasX < bx + bw && canvasY >= by && canvasY < by + bh) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  _mouseDown(e) {
+    if (e.button !== 0) return;  // left click only (right handled by contextmenu)
+    e.preventDefault();
+    const rect = this.canvas.getBoundingClientRect();
+    const cx   = e.clientX - rect.left;
+    const cy   = e.clientY - rect.top;
+    const idx  = this._pickIndexAtPoint(cx, cy);
+    if (idx >= 0) {
+      if (idx !== this.selectedPick) {
+        // First click on a different pick — select it
+        this.kbQueue.push({ type: "select", idx });
+      } else {
+        // Click on the already-selected pick — use it
+        this.kbQueue.push("use");
+      }
+    }
+  }
+
+  _contextMenu(e) {
+    e.preventDefault();
+    const rect = this.canvas.getBoundingClientRect();
+    const cx   = e.clientX - rect.left;
+    const cy   = e.clientY - rect.top;
+    const idx  = this._pickIndexAtPoint(cx, cy);
+    if (idx >= 0) {
+      this.kbQueue.push({ type: "flip", idx });
+    }
   }
 
   async _getInput(timeoutSeconds) {
@@ -338,6 +418,8 @@ class LockpickGame {
 
     this.finished = true;
     document.removeEventListener("keydown", this._boundKeyPress);
+    this.canvas.removeEventListener("mousedown", this._boundMouseDown);
+    this.canvas.removeEventListener("contextmenu", this._boundContextMenu);
     this._displayEnd(endSprites);
 
     await new Promise(r => setTimeout(r, 2500));
@@ -345,9 +427,9 @@ class LockpickGame {
   }
 
   async _playLock(i) {
-    const { minTime, maxTime, minTumblers, maxTumblers } = this.settings;
+    const { totalTime, numTumblers } = this.settings;
 
-    const numTumblers = randomInt(minTumblers, maxTumblers);
+    // Build tumbler sequence — each value unique from its neighbour
     this.tumblersUnlocked = 0;
     this.lock = [];
     let lastTum = -1;
@@ -357,7 +439,8 @@ class LockpickGame {
       this.lock.push((lastTum = tum));
     }
 
-    this.timeLeft = randomInt(minTime, maxTime);
+    this.timeLeft = totalTime;
+    this.lockStartTime = totalTime;   // stable denominator for the fuse render
     this._picture = this._locks[i % this._locks.length];
     this.text     = "white: Hurry up and pick the lock!";
     let hurry     = false;
@@ -380,30 +463,33 @@ class LockpickGame {
       }
 
       const input = await this._getInput(0.1);
-      switch (input) {
-        case "ArrowUp":    case "w": this.selectedPick = [9,7,8,0,1,2,3,4,5,6][this.selectedPick]; this._sound("pick_select"); break;
-        case "ArrowLeft":  case "a": this.selectedPick = [0,3,1,2,6,4,5,9,7,8][this.selectedPick]; this._sound("pick_select"); break;
-        case "ArrowRight": case "d": this.selectedPick = [0,2,3,1,5,6,4,8,9,7][this.selectedPick]; this._sound("pick_select"); break;
-        case "ArrowDown":  case "s": this.selectedPick = [3,4,5,6,7,8,9,1,2,0][this.selectedPick]; this._sound("pick_select"); break;
-        case " ": {
-          const p = this.picks[this.selectedPick];
-          this.picks[this.selectedPick] = [p[1], p[0], p[2]];
-          break;
+
+      // Handle object inputs from mouse events
+      if (input && typeof input === "object") {
+        if (input.type === "select") {
+          this.selectedPick = input.idx;
+          this._sound("pick_select");
+        } else if (input.type === "flip") {
+          const p = this.picks[input.idx];
+          this.picks[input.idx] = [p[1], p[0], p[2]];
+          this.selectedPick = input.idx;
+          this._sound("pick_select");
         }
-        case "Enter":
-          if (this.picks[this.selectedPick][2]) {
-            this.text = "white: You can't use that pick, it's broken!";
-          } else {
-            const snapped = await this._tryPick(this.picks[this.selectedPick][1]);
-            if (snapped) this.picks[this.selectedPick][2] = 1;
-          }
-          break;
-        case "Escape":
-          this.text = "red: You gave up on the lock!";
-          this._sound("lock_fail");
-          this._display();
-          await this._sleep(2);
-          return this._picture;
+      } else {
+        switch (input) {
+          case "use":
+            if (this.picks[this.selectedPick][2]) {
+              this.text = "white: You can't use that pick, it's broken!";
+            } else {
+              const snapped = await this._tryPick(this.picks[this.selectedPick][1]);
+              if (snapped) this.picks[this.selectedPick][2] = 1;
+            }
+            break;
+          case "Escape":
+            // ESC skips the minigame — dialog close handler resolves with the roll result
+            this.aborted = true;
+            return this._picture;
+        }
       }
 
       this._display();
@@ -528,7 +614,7 @@ class LockpickGame {
     this._spr(this._sprites[`pick_right_${sel[1]}`],                       85, 66);
 
     // Fuse timer
-    const pct   = Math.max(0, this.timeLeft / this.settings.maxTime);
+    const pct   = Math.max(0, this.timeLeft / this.settings.totalTime);
     const fuseX = 7 + Math.round(108 * pct);
     this._spr(this._sprites["wick"], 7, 10);
     this._rect(fuseX, 10, 108 + 7 - fuseX, 4, "#FF55FF");

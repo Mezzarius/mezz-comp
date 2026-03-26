@@ -1,54 +1,33 @@
-2026/02/25-20:14:47.808441 7fcb892196c0 Recovering log #1796
-2026/02/25-20:14:47.813612 7fcb892196c0 Delete type=0 #1796
-2026/02/25-20:14:47.813665 7fcb892196c0 Delete type=3 #1794
-2026/02/27-10:42:42.907481 7fc8a87ff6c0 Level-0 table #1801: started
-2026/02/27-10:42:42.944375 7fc8a87ff6c0 Level-0 table #1801: 1825599 bytes OK
-2026/02/27-10:42:42.951318 7fc8a87ff6c0 Delete type=0 #1799
-2026/02/27-10:42:44.355543 7fc8a87ff6c0 Compacting 1@0 + 0@1 files
-2026/02/27-10:42:44.376658 7fc8a87ff6c0 Generated table #1802@0: 680 keys, 940503 bytes
-2026/02/27-10:42:44.381823 7fc8a87ff6c0 Generated table #1803@0: 768 keys, 138631 bytes
-2026/02/27-10:42:44.381853 7fc8a87ff6c0 Compacted 1@0 + 0@1 files => 1079134 bytes
-2026/02/27-10:42:44.383893 7fc8a87ff6c0 compacted to: files[ 0 2 17 0 0 0 0 ]
-2026/02/27-10:42:48.913567 7fc8a87ff6c0 Compacting 1@1 + 10@2 files
-2026/02/27-10:42:48.944299 7fc8a87ff6c0 Generated table #1804@1: 490 keys, 2119570 bytes
-2026/02/27-10:42:48.972483 7fc8a87ff6c0 Generated table #1805@1: 479 keys, 2116833 bytes
-2026/02/27-10:42:49.002013 7fc8a87ff6c0 Generated table #1806@1: 481 keys, 2118578 bytes
-2026/02/27-10:42:49.028679 7fc8a87ff6c0 Generated table #1807@1: 593 keys, 2121186 bytes
-2026/02/27-10:42:49.059107 7fc8a87ff6c0 Generated table #1808@1: 1133 keys, 2124604 bytes
-2026/02/27-10:42:49.093995 7fc8a87ff6c0 Generated table #1809@1: 1404 keys, 2127352 bytes
-2026/02/27-10:42:49.130663 7fc8a87ff6c0 Generated table #1810@1: 1425 keys, 2127847 bytes
-2026/02/27-10:42:49.169508 7fc8a87ff6c0 Generated table #1811@1: 1432 keys, 2126684 bytes
-2026/02/27-10:42:49.204396 7fc8a87ff6c0 Generated table #1812@1: 1399 keys, 2126420 bytes
-2026/02/27-10:42:49.227247 7fc8a87ff6c0 Generated table #1813@1: 928 keys, 1508221 bytes
-2026/02/27-10:42:49.227285 7fc8a87ff6c0 Compacted 1@1 + 10@2 files => 20617295 bytes
-2026/02/27-10:42:49.229379 7fc8a87ff6c0 compacted to: files[ 0 1 17 0 0 0 0 ]
-2026/02/27-10:42:49.229598 7fc8a87ff6c0 Delete type=2 #1802
-2026/02/27-10:42:49.230153 7fc8a87ff6c0 Delete type=2 #1706
-2026/02/27-10:42:49.232053 7fc8a87ff6c0 Delete type=2 #1713
-2026/02/27-10:42:49.232955 7fc8a87ff6c0 Delete type=2 #1710
-2026/02/27-10:42:49.233742 7fc8a87ff6c0 Delete type=2 #1714
-2026/02/27-10:42:49.234322 7fc8a87ff6c0 Delete type=2 #1705
-2026/02/27-10:42:49.235320 7fc8a87ff6c0 Delete type=2 #1712
-2026/02/27-10:42:49.235933 7fc8a87ff6c0 Delete type=2 #1709
-2026/02/27-10:42:49.236505 7fc8a87ff6c0 Delete type=2 #1801
-2026/02/27-10:42:49.237346 7fc8a87ff6c0 Delete type=2 #1708
-2026/02/27-10:42:49.238005 7fc8a87ff6c0 Delete type=2 #1707
-2026/02/27-10:42:49.238605 7fc8a87ff6c0 Delete type=2 #1711
-2026/02/27-10:58:48.135226 7fc8a87ff6c0 Compacting 1@1 + 7@2 files
-2026/02/27-10:58:48.168970 7fc8a87ff6c0 Generated table #1814@1: 1402 keys, 2128394 bytes
-2026/02/27-10:58:48.204046 7fc8a87ff6c0 Generated table #1815@1: 1401 keys, 2127842 bytes
-2026/02/27-10:58:48.238813 7fc8a87ff6c0 Generated table #1816@1: 1426 keys, 2127908 bytes
-2026/02/27-10:58:48.272582 7fc8a87ff6c0 Generated table #1817@1: 1467 keys, 2124922 bytes
-2026/02/27-10:58:48.306895 7fc8a87ff6c0 Generated table #1818@1: 1443 keys, 2126239 bytes
-2026/02/27-10:58:48.342526 7fc8a87ff6c0 Generated table #1819@1: 1515 keys, 2125571 bytes
-2026/02/27-10:58:48.363392 7fc8a87ff6c0 Generated table #1820@1: 4115 keys, 1129826 bytes
-2026/02/27-10:58:48.363422 7fc8a87ff6c0 Compacted 1@1 + 7@2 files => 13890702 bytes
-2026/02/27-10:58:48.366676 7fc8a87ff6c0 compacted to: files[ 0 0 17 0 0 0 0 ]
-2026/02/27-10:58:48.367146 7fc8a87ff6c0 Delete type=2 #1718
-2026/02/27-10:58:48.368782 7fc8a87ff6c0 Delete type=2 #1719
-2026/02/27-10:58:48.369203 7fc8a87ff6c0 Delete type=2 #1803
-2026/02/27-10:58:48.369435 7fc8a87ff6c0 Delete type=2 #1716
-2026/02/27-10:58:48.370312 7fc8a87ff6c0 Delete type=2 #1720
-2026/02/27-10:58:48.370812 7fc8a87ff6c0 Delete type=2 #1717
-2026/02/27-10:58:48.371416 7fc8a87ff6c0 Delete type=2 #1715
-2026/02/27-10:58:48.372460 7fc8a87ff6c0 Delete type=2 #1721
+2026/03/20-03:08:04.500051 7eff367be6c0 Recovering log #2032
+2026/03/20-03:08:04.512603 7eff367be6c0 Delete type=3 #2030
+2026/03/20-03:08:04.512677 7eff367be6c0 Delete type=0 #2032
+2026/03/26-17:19:47.653893 7efc8efff6c0 Level-0 table #2038: started
+2026/03/26-17:19:47.706479 7efc8efff6c0 Level-0 table #2038: 1713063 bytes OK
+2026/03/26-17:19:47.716347 7efc8efff6c0 Delete type=0 #2036
+2026/03/26-17:19:47.717282 7efc8efff6c0 Manual compaction at level-0 from '!actors!0BCCjxb3PDDWShLA' @ 72057594037927935 : 1 .. '!folders!wmwCkut184sNv8bC' @ 0 : 0; will stop at (end)
+2026/03/26-17:19:47.717528 7efc8efff6c0 Manual compaction at level-1 from '!actors!0BCCjxb3PDDWShLA' @ 72057594037927935 : 1 .. '!folders!wmwCkut184sNv8bC' @ 0 : 0; will stop at '!actors.items.effects!yRfT3qAN5xRdtLrZ.yhgoHGYskwZ7jEgi.L30Z6q2pDiR4iFiF' @ 71511 : 1
+2026/03/26-17:19:47.717537 7efc8efff6c0 Compacting 1@1 + 10@2 files
+2026/03/26-17:19:47.748380 7efc8efff6c0 Generated table #2039@1: 471 keys, 2116363 bytes
+2026/03/26-17:19:47.782174 7efc8efff6c0 Generated table #2040@1: 470 keys, 2115888 bytes
+2026/03/26-17:19:47.829522 7efc8efff6c0 Generated table #2041@1: 1041 keys, 2122613 bytes
+2026/03/26-17:19:47.880184 7efc8efff6c0 Generated table #2042@1: 1391 keys, 2125307 bytes
+2026/03/26-17:19:47.934645 7efc8efff6c0 Generated table #2043@1: 1443 keys, 2127814 bytes
+2026/03/26-17:19:47.992189 7efc8efff6c0 Generated table #2044@1: 1365 keys, 2130763 bytes
+2026/03/26-17:19:48.048063 7efc8efff6c0 Generated table #2045@1: 1346 keys, 2125325 bytes
+2026/03/26-17:19:48.109825 7efc8efff6c0 Generated table #2046@1: 1369 keys, 2125229 bytes
+2026/03/26-17:19:48.189723 7efc8efff6c0 Generated table #2047@1: 1440 keys, 2125549 bytes
+2026/03/26-17:19:48.270475 7efc8efff6c0 Generated table #2048@1: 3472 keys, 1817197 bytes
+2026/03/26-17:19:48.270514 7efc8efff6c0 Compacted 1@1 + 10@2 files => 20932048 bytes
+2026/03/26-17:19:48.273628 7efc8efff6c0 compacted to: files[ 0 0 10 0 0 0 0 ]
+2026/03/26-17:19:48.274026 7efc8efff6c0 Delete type=2 #2034
+2026/03/26-17:19:48.275777 7efc8efff6c0 Delete type=2 #2023
+2026/03/26-17:19:48.277025 7efc8efff6c0 Delete type=2 #2018
+2026/03/26-17:19:48.277401 7efc8efff6c0 Delete type=2 #2017
+2026/03/26-17:19:48.277729 7efc8efff6c0 Delete type=2 #2020
+2026/03/26-17:19:48.278316 7efc8efff6c0 Delete type=2 #2024
+2026/03/26-17:19:48.278846 7efc8efff6c0 Delete type=2 #2019
+2026/03/26-17:19:48.279195 7efc8efff6c0 Delete type=2 #2016
+2026/03/26-17:19:48.279657 7efc8efff6c0 Delete type=2 #2038
+2026/03/26-17:19:48.280229 7efc8efff6c0 Delete type=2 #2022
+2026/03/26-17:19:48.280560 7efc8efff6c0 Delete type=2 #2021
+2026/03/26-17:19:48.322354 7efc8efff6c0 Manual compaction at level-1 from '!actors.items.effects!yRfT3qAN5xRdtLrZ.yhgoHGYskwZ7jEgi.L30Z6q2pDiR4iFiF' @ 71511 : 1 .. '!folders!wmwCkut184sNv8bC' @ 0 : 0; will stop at (end)
