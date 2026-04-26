@@ -1,26 +1,763 @@
-.mezz-paperdoll {
-  position: relative;
-  width: 100%;
-  height: 100%;
+/* ─── Mezz Paperdoll — BG3 style ─────────────────────────────────────────── */
+
+/* BG3 palette */
+:root {
+  --bg3-bg:        #1a1712;
+  --bg3-panel:     #22201a;
+  --bg3-border:    #5a4a28;
+  --bg3-gold:      #c8a84b;
+  --bg3-gold-dim:  #7a6530;
+  --bg3-text:      #e2d5b0;
+  --bg3-text-dim:  #8a7d60;
+  --bg3-slot:      #0e0d0b;
+  --bg3-slot-hov:  #2a2518;
+  --bg3-red:       #8a2020;
+  --bg3-green:     #2a5a1a;
+  --bg3-highlight: #3a3020;
 }
 
-.mezz-paperdoll-bg {
+/* ── Raw popup window ── */
+.mezz-pd-win {
+  position: fixed;
+  width: 700px;
+  height: 560px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg3-bg);
+  border: 1px solid var(--bg3-border);
+  border-top: 2px solid var(--bg3-gold);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.8), 0 12px 40px rgba(0,0,0,0.9), inset 0 1px 0 rgba(200,168,75,0.15);
+  z-index: 200;
+  overflow: hidden;
+  font-family: var(--font-primary, "Signika", serif);
+  resize: both;
+  min-width: 480px;
+  min-height: 380px;
+}
+
+/* ── Title bar — BG3 style dark header ── */
+.mezz-pd-win-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 12px;
+  background: linear-gradient(180deg, #2a2418 0%, #1a1712 100%);
+  border-bottom: 1px solid var(--bg3-border);
+  cursor: move;
+  user-select: none;
+  flex-shrink: 0;
+  color: var(--bg3-gold);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mezz-pd-win-close {
+  background: rgba(100, 20, 20, 0.6);
+  border: 1px solid #6a3030;
+  border-radius: 2px;
+  color: #d08080;
+  font-size: 10px;
+  padding: 2px 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: background 0.15s, border-color 0.15s;
+}
+.mezz-pd-win-close:hover {
+  background: rgba(160, 30, 30, 0.8);
+  border-color: #c06060;
+  color: #ffcccc;
+}
+
+/* ── Win body ── */
+.mezz-pd-win-body {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── In-sheet tab ── */
+.mezz-pd-tab {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  box-sizing: border-box;
+  background: var(--bg3-bg);
+}
+
+.mezz-pd-split-row {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Doll column ── */
+.mezz-pd-doll-col {
+  flex: 0 0 240px;
+  width: 240px;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: var(--bg3-panel);
+  border-right: 1px solid var(--bg3-border);
+}
+
+/* ── Container column ── */
+.mezz-pd-ct-col {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  background: var(--bg3-bg);
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg3-border) var(--bg3-bg);
+}
+
+/* ── Body wrap ── */
+.mezz-pd-body-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: visible;
+}
+
+.mezz-pd-body {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
+  display: block;
 }
 
-.mezz-slot {
+/* Dark vignette overlay to make slots readable over character art */
+.mezz-pd-body-wrap::after {
+  content: '';
   position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(10,8,5,0.45) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Photo button ── */
+.mezz-pd-photo-btn {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  padding: 2px 10px;
+  font-size: 9px;
+  background: rgba(10,8,5,0.75);
+  border: 1px solid var(--bg3-gold-dim);
+  border-radius: 2px;
+  color: var(--bg3-gold);
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.15s, border-color 0.15s;
+}
+.mezz-pd-photo-btn:hover {
+  background: rgba(40,30,10,0.9);
+  border-color: var(--bg3-gold);
+}
+
+/* ── Equipment slots — BG3 octagon style ── */
+.mezz-pd-slot {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+  background: var(--bg3-slot);
+  border: 1.5px solid var(--bg3-gold-dim);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background 0.15s;
+  z-index: 2;
+}
+
+.mezz-pd-slot:hover {
+  background: var(--bg3-slot-hov);
+  border-color: var(--bg3-gold);
+}
+
+.mezz-pd-slot img {
   width: 36px;
   height: 36px;
-  transform: translate(-50%, -50%);
-  border: 2px solid #00aaff;
-  border-radius: 6px;
-  background: rgba(0,0,0,0.6);
+  object-fit: cover;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 }
 
-.mezz-slot img {
+.mezz-pd-empty-icon {
+  font-size: 14px;
+  color: var(--bg3-gold-dim);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Container slots — circular, green tint */
+.mezz-pd-slot--container {
+  clip-path: none;
+  border-radius: 50%;
+  border-color: #4a6a30;
+  background: rgba(10, 18, 8, 0.85);
+}
+.mezz-pd-slot--container:hover {
+  border-color: #7aaa50;
+  background: rgba(20, 35, 12, 0.9);
+}
+.mezz-pd-slot--container img {
+  clip-path: none;
+  border-radius: 50%;
+}
+
+/* Slot tooltip */
+.mezz-pd-slot-tip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10,8,5,0.97);
+  border: 1px solid var(--bg3-border);
+  border-top: 1px solid var(--bg3-gold-dim);
+  padding: 3px 8px;
+  font-size: 10px;
+  color: var(--bg3-text);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+  letter-spacing: 0.03em;
+}
+.mezz-pd-slot:hover .mezz-pd-slot-tip { opacity: 1; }
+.mezz-pd-slot--left .mezz-pd-slot-tip,
+.mezz-pd-slot--right .mezz-pd-slot-tip {
+  bottom: auto;
+  top: calc(100% + 6px);
+}
+
+/* Unequip button */
+.mezz-pd-unequip {
+  position: absolute;
+  top: -2px; right: -2px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--bg3-red);
+  border: 1px solid #c04040;
+  color: #ffaaaa;
+  font-size: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 3;
+}
+.mezz-pd-slot:hover .mezz-pd-unequip { opacity: 1; }
+.mezz-pd-slot.dragover {
+  border-color: #80c0ff;
+  background: rgba(40,80,140,0.5);
+}
+
+/* ── Hand panels ── */
+.mezz-hands-row {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  flex-shrink: 0;
+  border-top: 1px solid var(--bg3-border);
+  background: var(--bg3-panel);
+}
+
+.mezz-hand-panel {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 6px 5px;
+  border-right: 1px solid var(--bg3-border);
+}
+.mezz-hand-panel:last-child { border-right: none; }
+
+.mezz-hand-title {
+  font-size: 9px;
+  color: var(--bg3-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 3px;
+  text-align: center;
+}
+
+.mezz-hand-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+.mezz-hand-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg3-slot);
+  border: 1px solid var(--bg3-border);
+  border-radius: 2px;
+}
+.mezz-hand-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 1px;
+}
+.mezz-hand-empty-icon {
+  font-size: 10px;
+  color: var(--bg3-gold-dim);
+  opacity: 0.4;
+}
+
+.mezz-hand-select {
+  flex: 1;
+  min-width: 0;
+  font-size: 9px;
+  color: var(--bg3-text);
+  background: var(--bg3-slot);
+  border: 1px solid var(--bg3-border);
+  border-radius: 2px;
+  padding: 1px 2px;
+  height: 20px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+.mezz-hand-select:focus {
+  outline: none;
+  border-color: var(--bg3-gold-dim);
+}
+.mezz-hand-select option {
+  background: var(--bg3-panel);
+  color: var(--bg3-text);
+}
+
+/* ─── Encumbrance bar ────────────────────────────────────────────────────── */
+
+.mezz-ct-encbar {
+  background: var(--bg3-panel);
+  border: 1px solid var(--bg3-border);
+  border-radius: 2px;
+  padding: 5px 10px;
+  margin-bottom: 5px;
+}
+.mezz-ct-enc-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--bg3-text-dim);
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.mezz-ct-enc-nums { color: var(--bg3-gold); font-weight: 600; }
+.mezz-ct-enc-track {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.mezz-ct-enc-fill { height: 100%; border-radius: 1px; background: #4a8a30; transition: width 0.3s; }
+.mezz-ct-enc-fill--warn { background: #a87820; }
+.mezz-ct-enc-fill--over { background: #8a2020; }
+
+/* ─── Container cards ────────────────────────────────────────────────────── */
+
+.mezz-ct-card {
+  margin-bottom: 4px;
+  border: 1px solid var(--bg3-border);
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--bg3-panel);
+}
+.mezz-ct-card--nested {
+  margin: 3px 0 3px 8px;
+  border-color: rgba(90,74,40,0.5);
+}
+.mezz-ct-card-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+  background: linear-gradient(180deg, rgba(50,40,20,0.6) 0%, rgba(30,25,15,0.6) 100%);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+  border-bottom: 1px solid transparent;
+}
+.mezz-ct-card-header:hover { background: linear-gradient(180deg, rgba(70,55,25,0.7) 0%, rgba(50,40,18,0.7) 100%); }
+.mezz-ct-card-body--open > .mezz-ct-card-header,
+.mezz-ct-card-header + .mezz-ct-card-body--open { border-bottom-color: var(--bg3-border); }
+
+.mezz-ct-container-icon { font-size: 11px; color: var(--bg3-gold); flex-shrink: 0; width: 13px; text-align: center; }
+.mezz-ct-container-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bg3-gold);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+.mezz-ct-card--nested .mezz-ct-container-name { font-size: 10px; color: var(--bg3-text); }
+.mezz-ct-container-meta { font-size: 9px; color: var(--bg3-text-dim); flex-shrink: 0; letter-spacing: 0.03em; }
+.mezz-ct-chevron { font-size: 8px; color: var(--bg3-gold-dim); transition: transform 0.2s; flex-shrink: 0; }
+.mezz-ct-chevron--open { transform: rotate(90deg); }
+
+.mezz-ct-card-body { display: none; background: rgba(15,12,8,0.5); }
+.mezz-ct-card-body--open { display: block; }
+
+/* Flash highlight */
+.mezz-ct-card--highlight {
+  box-shadow: 0 0 0 2px var(--bg3-gold);
+  transition: box-shadow 0.2s;
+}
+
+/* ─── Item rows ──────────────────────────────────────────────────────────── */
+
+.mezz-ct-item-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-bottom: 1px solid rgba(90,74,40,0.2);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.mezz-ct-item-row:last-child { border-bottom: none; }
+.mezz-ct-item-row:hover { background: var(--bg3-highlight); }
+.mezz-ct-item-row.mezz-ct-dragging { opacity: 0.4; }
+
+.mezz-ct-item-img {
+  width: 22px;
+  height: 22px;
+  border-radius: 2px;
+  object-fit: cover;
+  border: 1px solid var(--bg3-border);
+  flex-shrink: 0;
+}
+.mezz-ct-item-qty { font-size: 9px; color: var(--bg3-gold-dim); min-width: 18px; text-align: center; }
+.mezz-ct-item-name {
+  font-size: 11px;
+  color: var(--bg3-text);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mezz-ct-item-wt { font-size: 9px; color: var(--bg3-text-dim); flex-shrink: 0; }
+
+/* ─── Type tags ──────────────────────────────────────────────────────────── */
+
+.mezz-ct-tag {
+  font-size: 8px;
+  padding: 1px 4px;
+  border-radius: 1px;
+  font-weight: 700;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.mezz-ct-tag--weapon    { background: rgba(100,30,20,0.5); color: #e08870; border: 1px solid rgba(150,50,30,0.6); }
+.mezz-ct-tag--armor     { background: rgba(20,60,120,0.5); color: #80a8e0; border: 1px solid rgba(30,80,160,0.6); }
+.mezz-ct-tag--consumable{ background: rgba(30,80,20,0.5);  color: #80c870; border: 1px solid rgba(40,100,25,0.6); }
+.mezz-ct-tag--ammo      { background: rgba(90,60,10,0.5);  color: #d0a050; border: 1px solid rgba(120,80,15,0.6); }
+.mezz-ct-tag--magic     { background: rgba(60,30,120,0.5); color: #b090e0; border: 1px solid rgba(80,40,160,0.6); }
+.mezz-ct-tag--misc      { background: rgba(40,35,25,0.5);  color: #a09070; border: 1px solid rgba(60,50,30,0.6); }
+
+/* ─── Drop zones ─────────────────────────────────────────────────────────── */
+
+.mezz-ct-add-row {
+  padding: 4px 10px;
+  font-size: 9px;
+  color: var(--bg3-text-dim);
+  text-align: center;
+  border-top: 1px dashed rgba(90,74,40,0.3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.15s, color 0.15s;
+}
+.mezz-ct-add-row.mezz-ct-drop-hover,
+.mezz-ct-card-body.mezz-ct-drop-hover {
+  background: rgba(60,50,20,0.5);
+  color: var(--bg3-gold);
+}
+.mezz-ct-card--loose {
+  border-style: dashed;
+  border-color: rgba(90,74,40,0.35);
+}
+
+/* ─── Weapon Set Cycler (BG3 style) ─────────────────────────────────────── */
+
+.mezz-ws-panel {
+  flex-shrink: 0;
+  border-top: 1px solid var(--bg3-border);
+  background: var(--bg3-panel);
+  padding: 4px 6px 5px;
+}
+
+/* Set tabs: I  II  III */
+.mezz-ws-tabs {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 5px;
+  justify-content: center;
+}
+
+.mezz-ws-tab {
+  flex: 1;
+  padding: 2px 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--bg3-text-dim);
+  background: var(--bg3-slot);
+  border: 1px solid var(--bg3-border);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  text-align: center;
+}
+.mezz-ws-tab:hover {
+  color: var(--bg3-text);
+  border-color: var(--bg3-gold-dim);
+}
+.mezz-ws-tab--active {
+  color: var(--bg3-gold);
+  border-color: var(--bg3-gold);
+  background: rgba(60,45,15,0.6);
+}
+
+/* Two weapon slots side by side */
+.mezz-ws-slots {
+  display: flex;
+  gap: 6px;
+}
+
+.mezz-ws-slot-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  position: relative;
+}
+
+.mezz-ws-slot {
+  width: 52px;
+  height: 52px;
+  background: var(--bg3-slot);
+  border: 1.5px solid var(--bg3-border);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.15s, background 0.15s;
+}
+.mezz-ws-slot:hover {
+  border-color: var(--bg3-gold);
+  background: var(--bg3-slot-hov);
+}
+.mezz-ws-slot--filled { border-color: var(--bg3-gold-dim); }
+
+.mezz-ws-slot img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+.mezz-ws-empty-icon {
+  font-size: 16px;
+  color: var(--bg3-gold-dim);
+  opacity: 0.4;
+}
+
+.mezz-ws-clear {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg3-red);
+  border: 1px solid #c04040;
+  color: #ffaaaa;
+  font-size: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 3;
+}
+.mezz-ws-slot:hover .mezz-ws-clear { opacity: 1; }
+
+.mezz-ws-slot-label {
+  font-size: 9px;
+  color: var(--bg3-text-dim);
+  text-align: center;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+/* ── Item picker popup ── */
+.mezz-ws-picker {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  max-height: 240px;
+  background: var(--bg3-panel);
+  border: 1px solid var(--bg3-border);
+  border-top: 2px solid var(--bg3-gold-dim);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.8);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mezz-ws-search {
   width: 100%;
-  height: 100%;
+  padding: 4px 8px;
+  font-size: 10px;
+  background: var(--bg3-slot);
+  border: none;
+  border-bottom: 1px solid var(--bg3-border);
+  color: var(--bg3-text);
+  box-sizing: border-box;
+  outline: none;
+}
+.mezz-ws-search::placeholder { color: var(--bg3-text-dim); }
+
+.mezz-ws-list {
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg3-border) var(--bg3-panel);
+}
+
+.mezz-ws-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  font-size: 10px;
+  color: var(--bg3-text);
+  cursor: pointer;
+  border-bottom: 1px solid rgba(90,74,40,0.15);
+  transition: background 0.1s;
+}
+.mezz-ws-option:hover { background: var(--bg3-highlight); color: var(--bg3-gold); }
+
+.mezz-ws-opt-img {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid var(--bg3-border);
+  flex-shrink: 0;
+}
+
+/* ─── Drag reveal — slots that appear when dragging a compatible item ─────── */
+
+.mezz-pd-slot--drag-target {
+  border-color: var(--bg3-gold) !important;
+  background: rgba(60, 45, 10, 0.85) !important;
+  box-shadow: 0 0 10px rgba(200, 168, 75, 0.5), inset 0 0 8px rgba(200, 168, 75, 0.15) !important;
+  animation: mezz-slot-pulse 1s ease-in-out infinite;
+}
+
+@keyframes mezz-slot-pulse {
+  0%   { box-shadow: 0 0 6px rgba(200,168,75,0.4), inset 0 0 6px rgba(200,168,75,0.1); }
+  50%  { box-shadow: 0 0 14px rgba(200,168,75,0.7), inset 0 0 10px rgba(200,168,75,0.25); }
+  100% { box-shadow: 0 0 6px rgba(200,168,75,0.4), inset 0 0 6px rgba(200,168,75,0.1); }
+}
+
+/* ─── Small slots ─────────────────────────────────────────────────────────── */
+.mezz-pd-slot--sm {
+  width: 32px !important;
+  height: 32px !important;
+}
+.mezz-pd-slot--sm img {
+  width: 26px !important;
+  height: 26px !important;
+}
+.mezz-pd-slot--sm .mezz-pd-empty-icon { font-size: 10px !important; }
+
+/* Hand slots — slightly brighter border to distinguish */
+.mezz-pd-slot--hand {
+  border-color: rgba(200, 168, 75, 0.8);
+}
+.mezz-pd-slot--hand.mezz-pd-slot--filled {
+  border-color: var(--bg3-gold);
+}
+
+/* ─── Weapon set tabs ─────────────────────────────────────────────────────── */
+.mezz-ws-tabs-row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  padding: 5px 8px 4px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--bg3-border);
+  background: var(--bg3-panel);
+}
+.mezz-ws-tab {
+  flex: 1;
+  padding: 3px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--bg3-text-dim);
+  background: var(--bg3-slot);
+  border: 1px solid var(--bg3-border);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  text-align: center;
+}
+.mezz-ws-tab:hover { color: var(--bg3-text); border-color: var(--bg3-gold-dim); }
+.mezz-ws-tab--active {
+  color: var(--bg3-gold);
+  border-color: var(--bg3-gold);
+  background: rgba(60,45,15,0.7);
 }

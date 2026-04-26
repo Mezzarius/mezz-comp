@@ -1,20 +1,15 @@
-import { getSetting, log, sendChat, getModuleAsset } from "../utils.mjs";
+import { getSetting, sendChat, getModuleAsset } from "../utils.mjs";
+import { showAuditToast } from "../audit-toast.mjs";
 
-/**
- * In-memory guard replacing the async actor flag.
- * Using a synchronous Set means the check-and-set is instant with no await gap
- * where a second updateItem event could slip through.
- * Keyed by actor.id so multiple actors are tracked independently.
- */
+// ─── Container Burst ──────────────────────────────────────────────────────────
+
 const _burstingActors = new Set();
 
-Hooks.on("updateItem", async (item, change, options, userId) => {
+Hooks.on("updateItem", async (item, _change, options, _userId) => {
   if (!getSetting("inventory")) return;
   if (!item.actor) return;
 
   const actor = item.actor;
-
-  // Synchronous guard — no await gap between check and set
   if (_burstingActors.has(actor.id)) return;
   _burstingActors.add(actor.id);
 
@@ -22,19 +17,13 @@ Hooks.on("updateItem", async (item, change, options, userId) => {
     const token = actor.getActiveTokens()[0];
     if (!token) return;
 
-    // Snapshot overloaded containers NOW, before any mutations happen.
-    // Also exclude items that are already broken/loot to avoid re-processing.
     const overloaded = actor.items.filter(i => {
-      const cap = i.system?.capacity?.weight?.value;
+      const cap   = i.system?.capacity?.weight?.value;
       const total = i.system?.contentsWeight;
-      if (cap == null || total == null) return false;
-      if (i.type === "loot") return false;       // skip broken remnants
-      if (total <= cap) return false;
-      return true;
+      return cap != null && total != null && i.type !== "loot" && total > cap;
     });
 
     for (const container of overloaded) {
-      // Guard: item may have already been deleted by a previous loop iteration
       if (!actor.items.get(container.id)) continue;
 
       sendChat(actor, `<b style="color:red">${container.name}</b> is overloaded and <b>BURSTS OPEN!</b>`);
@@ -46,12 +35,11 @@ Hooks.on("updateItem", async (item, change, options, userId) => {
         );
       } catch {}
 
-      // Snapshot contents before deletion
-      const contents = actor.items.filter(i => i.system?.container === container.id);
+      const contents  = actor.items.filter(i => i.system?.container === container.id);
       const pileItems = contents.map(i => i.toObject());
 
       if (contents.length) {
-        await actor.deleteEmbeddedDocuments("Item", contents.map(i => i.id));
+        await actor.deleteEmbeddedDocuments("Item", contents.map(i => i.id), { noHook: true });
       }
 
       if (game.itempiles?.API && pileItems.length) {
@@ -62,11 +50,10 @@ Hooks.on("updateItem", async (item, change, options, userId) => {
         });
       }
 
-      // Create broken remnant — use noHook so our monitor hooks ignore this
       await actor.createEmbeddedDocuments("Item", [{
         name: `${container.name} (Broken)`,
         type: "loot",
-        img: container.img,
+        img:  container.img,
         system: {
           description: { value: "This container shattered from excess weight." },
           weight: container.system.weight
@@ -81,40 +68,44 @@ Hooks.on("updateItem", async (item, change, options, userId) => {
   }
 });
 
-/**
- * ==========================================
- *  PLAYER SHEET CHANGE MONITOR
- * ==========================================
- */
+// ─── GM Audit Notify ──────────────────────────────────────────────────────────
 
 async function notifyGM(message) {
   if (game.user.isGM) {
-    ui.notifications.warn(message);
+    showAuditToast(message);
     await appendToAuditLog(message);
   } else {
-    game.socket.emit("module.mezz-comp", {
-      // FIX: was "GM_NOTIFY" here but "GM_NOTFY" in main.mjs — standardised to GM_NOTIFY
-      type: "GM_NOTIFY",
-      data: message
-    });
+    game.socket.emit("module.mezz-comp", { type: "GM_NOTIFY", data: message });
   }
 }
 
-/**
- * Cache of actor/item state snapshots, keyed by document id.
- * Populated in preUpdate hooks so we have "before" values on hand
- * when the corresponding update hook fires.
- */
+// Snapshot cache keyed "actor-<id>" or "item-<id>".
+// Capped at 100 entries to prevent unbounded growth from missed update events.
 const _preUpdateCache = new Map();
+const _CACHE_MAX = 100;
 
-/**
- * Actor-wide changes (HP, stats, gold, etc.)
- */
-Hooks.on("preUpdateActor", (actor, changes, options, userId) => {
+function _cacheSet(key, value) {
+  if (_preUpdateCache.size >= _CACHE_MAX) {
+    _preUpdateCache.delete(_preUpdateCache.keys().next().value);
+  }
+  _preUpdateCache.set(key, value);
+}
+
+// ─── Actor monitor ────────────────────────────────────────────────────────────
+
+const _IGNORED_ACTOR_PREFIXES = [
+  "system.spells.",
+  "system.attributes.encumbrance",
+  "system.traits.",
+  "system.bonuses.",
+  "system.details.xp",
+];
+
+Hooks.on("preUpdateActor", (actor, changes, _options, userId) => {
   const user = game.users.get(userId);
   if (!user || user.isGM) return;
 
-  const flat = foundry.utils.flattenObject(changes);
+  const flat     = foundry.utils.flattenObject(changes);
   const snapshot = {};
 
   for (const path of Object.keys(flat)) {
@@ -122,14 +113,14 @@ Hooks.on("preUpdateActor", (actor, changes, options, userId) => {
     snapshot[path] = foundry.utils.getProperty(actor, path);
   }
 
-  _preUpdateCache.set(`actor-${actor.id}`, snapshot);
+  _cacheSet(`actor-${actor.id}`, snapshot);
 });
 
-Hooks.on("updateActor", (actor, changes, options, userId) => {
+Hooks.on("updateActor", (actor, changes, _options, userId) => {
   const user = game.users.get(userId);
   if (!user || user.isGM) return;
 
-  const flat = foundry.utils.flattenObject(changes);
+  const flat   = foundry.utils.flattenObject(changes);
   const before = _preUpdateCache.get(`actor-${actor.id}`) ?? {};
   _preUpdateCache.delete(`actor-${actor.id}`);
 
@@ -137,48 +128,55 @@ Hooks.on("updateActor", (actor, changes, options, userId) => {
 
   for (const [path, newValue] of Object.entries(flat)) {
     if (!path.startsWith("system.") || path.startsWith("system._")) continue;
-
-    // Ignore paths that dnd5e updates automatically as side-effects of other
-    // changes (spell slot bookkeeping, currency weight, encumbrance, etc.).
-    // These fire on every spell drag/item add and are not meaningful player edits.
-    if (
-      path.startsWith("system.spells.")      ||  // spell slot value/override changes
-      path.startsWith("system.attributes.encumbrance") ||
-      path.startsWith("system.traits.")      ||
-      path.startsWith("system.bonuses.")     ||
-      path.startsWith("system.details.xp")
-    ) continue;
+    if (_IGNORED_ACTOR_PREFIXES.some(p => path.startsWith(p))) continue;
 
     const oldValue = path in before ? before[path] : "?";
-    lines.push(`${path}: <b>${oldValue}</b> → <b>${newValue}</b>`);
+    const short    = path.startsWith("system.") ? path.slice(7) : path;
+    lines.push(`${short}: <b>${oldValue}</b> → <b>${newValue}</b>`);
   }
 
   if (!lines.length) return;
 
-  const message =
-    `🧾 ${user.name} modified <b>${actor.name}</b><br>` +
-    lines.join("<br>");
-
-  notifyGM(message);
+  notifyGM(`🧾 ${user.name} modified <b>${actor.name}</b>: ${lines.join(" | ")}`);
 });
 
-/**
- * Item changes (quantity, equipped, etc.)
- */
+// ─── Item monitor ─────────────────────────────────────────────────────────────
+
+function _isNoisyItemPath(path) {
+  return (
+    path.startsWith("_") ||
+    path.startsWith("flags.dnd5e") ||
+    path.startsWith("flags.core") ||
+    path === "sort"
+  );
+}
+
+const _ITEM_PATH_LABELS = {
+  "system.equipped":            "equipped",
+  "system.quantity":            "quantity",
+  "system.attunement.progress": "attuned",
+};
+
+function _friendlyItemLabel(path, oldValue, newValue) {
+  const label = _ITEM_PATH_LABELS[path] ?? (path.startsWith("system.") ? path.slice(7) : path);
+  return `${label}: <b>${oldValue}</b> → <b>${newValue}</b>`;
+}
+
 Hooks.on("preUpdateItem", (item, changes, options, userId) => {
   const user = game.users.get(userId);
   if (!user || user.isGM) return;
   if (!item.actor || options?.noHook) return;
 
-  const flat = foundry.utils.flattenObject(changes);
+  const flat     = foundry.utils.flattenObject(changes);
   const snapshot = {};
 
   for (const path of Object.keys(flat)) {
-    if (path.startsWith("_")) continue;
-    snapshot[path] = foundry.utils.getProperty(item, path);
+    if (!path.startsWith("_")) {
+      snapshot[path] = foundry.utils.getProperty(item, path);
+    }
   }
 
-  _preUpdateCache.set(`item-${item.id}`, snapshot);
+  _cacheSet(`item-${item.id}`, snapshot);
 });
 
 Hooks.on("updateItem", (item, changes, options, userId) => {
@@ -186,75 +184,69 @@ Hooks.on("updateItem", (item, changes, options, userId) => {
   if (!user || user.isGM) return;
   if (!item.actor || options?.noHook) return;
 
-  const flat = foundry.utils.flattenObject(changes);
+  const flat   = foundry.utils.flattenObject(changes);
   const before = _preUpdateCache.get(`item-${item.id}`) ?? {};
   _preUpdateCache.delete(`item-${item.id}`);
 
   const lines = [];
 
   for (const [path, newValue] of Object.entries(flat)) {
-    if (path.startsWith("_")) continue;
+    if (_isNoisyItemPath(path)) continue;
     const oldValue = path in before ? before[path] : "?";
-    lines.push(`${path}: <b>${oldValue}</b> → <b>${newValue}</b>`);
+    lines.push(_friendlyItemLabel(path, oldValue, newValue));
   }
 
   if (!lines.length) return;
 
-  const message =
-    `🎒 ${user.name} modified <b>${item.name}</b> on <b>${item.actor.name}</b><br>` +
-    lines.join("<br>");
-
-  notifyGM(message);
+  notifyGM(`🎒 ${user.name} → <b>${item.name}</b> (${item.actor.name}): ${lines.join(" | ")}`);
 });
 
-
-Hooks.on("createItem", (item, options, userId) => {
+Hooks.on("createItem", (item, _options, userId) => {
   const user = game.users.get(userId);
-  if (!user || user.isGM) return;
-  if (!item.actor) return;
-
-  notifyGM(`➕ ${user.name} added ${item.name} to ${item.actor.name}`);
+  if (!user || user.isGM || !item.actor) return;
+  notifyGM(`➕ ${user.name} added <b>${item.name}</b> to <b>${item.actor.name}</b>`);
 });
 
-
-Hooks.on("deleteItem", (item, options, userId) => {
+Hooks.on("deleteItem", (item, _options, userId) => {
   const user = game.users.get(userId);
-  if (!user || user.isGM) return;
-  if (!item.actor) return;
-
-  notifyGM(`🗑 ${user.name} deleted ${item.name} from ${item.actor.name}`);
+  if (!user || user.isGM || !item.actor) return;
+  notifyGM(`🗑 ${user.name} deleted <b>${item.name}</b> from <b>${item.actor.name}</b>`);
 });
 
-async function getAuditJournal() {
-  let journal = game.journal.getName("Mezz Audit Log");
+// ─── Audit Journal ────────────────────────────────────────────────────────────
 
-  if (!journal && game.user.isGM) {
-    journal = await JournalEntry.create({
-      name: "Mezz Audit Log",
-      pages: [{
-        name: "Log",
-        type: "text",
-        text: { content: "<h2>Mezz Audit Log</h2><hr>" }
-      }]
+let _auditJournal = null;
+
+// Invalidate cache if the GM deletes the journal mid-session
+Hooks.on("deleteJournalEntry", (doc) => {
+  if (_auditJournal?.id === doc.id) _auditJournal = null;
+});
+
+async function _getAuditJournal() {
+  if (_auditJournal) return _auditJournal;
+
+  _auditJournal = game.journal.getName("Mezz Audit Log") ?? null;
+
+  if (!_auditJournal && game.user.isGM) {
+    _auditJournal = await JournalEntry.create({
+      name:  "Mezz Audit Log",
+      pages: [{ name: "Log", type: "text", text: { content: "<h2>Mezz Audit Log</h2><hr>" } }]
     });
   }
 
-  return journal;
+  return _auditJournal;
 }
 
-// FIX: exported so main.mjs can import and call it from the socket handler
 export async function appendToAuditLog(message) {
   if (!game.user.isGM) return;
 
-  const journal = await getAuditJournal();
+  const journal = await _getAuditJournal();
   if (!journal) return;
 
   const page = journal.pages.contents[0];
   const time = new Date().toLocaleString();
 
-  const newContent =
-    page.text.content +
-    `<p><strong>[${time}]</strong><br>${message}</p><hr>`;
-
-  await page.update({ "text.content": newContent });
+  await page.update({
+    "text.content": page.text.content + `<p><strong>[${time}]</strong><br>${message}</p><hr>`
+  });
 }

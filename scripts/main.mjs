@@ -16,6 +16,7 @@ import "./features/level-up.mjs";
 
 // Paperdoll — single entry point
 import "./inventory/paperdoll-init.mjs";
+import "./inventory/paperdoll-containers.mjs";
 import "./inventory/paperdoll-ui.mjs";
 
 Hooks.once("init", () => {

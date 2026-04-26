@@ -13,7 +13,7 @@ export let mezzSocket = null;
 export function registerLockpickSocket() {
   mezzSocket = socketlib.registerModule(MODULE_ID);
   mezzSocket.register("runLockpickMinigame", _runMinigameAsPlayer);
-  log("Lockpick socketlib socket registered.");
+  console.log("🧩 [mezz-comp] Lockpick socketlib socket registered.");
 }
 
 export function registerLockpickHooks() {
