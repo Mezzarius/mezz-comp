@@ -1,7 +1,7 @@
 {
   "id": "mezz-comp",
   "title": "Mezz's Comp",
-  "version": "1.3.1",
+  "version": "1.3.20",
   "compatibility": {
     "minimum": "12",
     "verified": "13"
@@ -34,7 +34,8 @@
     }
   },
   "esmodules": [
-    "scripts/main.mjs"
+    "scripts/main.mjs",
+    "scripts/inventory/paperdoll-containers.mjs"
   ],
   "styles": [
     "styles/mezz-comp.css",
