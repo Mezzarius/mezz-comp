@@ -52,10 +52,11 @@ function _getBg3ActiveSet(actor) {
 function _getBg3SetItem(actor, setIndex, hand) {
   const sets = actor.flags?.['bg3-hud-core']?.hudState?.weaponSets?.sets;
   if (!sets) return null;
-  // BG3 HUD stores all weapon sets in sets[0].items with keys like '0-0','1-0','2-0'
-  // Key format: '<setIndex>-<slot>' where slot 0=main, 1=off
-  const handSlot = hand === 'main' ? '0' : '1';
-  const key      = setIndex + '-' + handSlot;
+  // BG3 HUD key format (confirmed from blade spell code):
+  // '<slotPosition>-<setIndex>' where slotPosition 0=main, 1=off
+  // e.g. set 0 main='0-0', set 0 off='1-0', set 1 main='0-1', set 1 off='1-1'
+  const slotPos = hand === 'main' ? '0' : '1';
+  const key      = slotPos + '-' + setIndex;
   // Try sets[0].items first (primary storage), then sets[setIndex].items (fallback)
   const items    = sets[0]?.items ?? sets[setIndex]?.items;
   if (!items) return null;
@@ -92,12 +93,12 @@ async function _writeBg3HudHand(actor, hand, item) {
   while (hudState.weaponSets.sets.length <= active) {
     hudState.weaponSets.sets.push({ items: {} });
   }
-  // Always write to sets[0].items with key '<setIndex>-<slot>'
+  // Write to sets[0].items with key '<slotPosition>-<setIndex>'
   if (!hudState.weaponSets.sets[0]) hudState.weaponSets.sets[0] = { items: {} };
   const set = hudState.weaponSets.sets[0];
   if (!set.items) set.items = {};
-  const handSlot = hand === 'main' ? '0' : '1';
-  const key      = active + '-' + handSlot;
+  const slotPos = hand === 'main' ? '0' : '1';
+  const key     = slotPos + '-' + active;
   if (item) set.items[key] = item.uuid;
   else      delete set.items[key];
 
