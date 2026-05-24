@@ -42,7 +42,7 @@ jobs:
         run: |
           set -euo pipefail
           files=(module.json README.md LICENSE)
-          for d in styles scripts assets languages media packs lockpick; do
+          for d in styles scripts assets languages media packs lockpick templates; do
             [ -e "$d" ] && files+=("$d")
           done
           zip -r ./module.zip "${files[@]}"
