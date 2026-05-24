@@ -18,26 +18,30 @@ import "./features/level-up.mjs";
 import "./inventory/paperdoll-init.mjs";
 import "./inventory/paperdoll-containers.mjs";
 import "./inventory/paperdoll-ui.mjs";
+
 import { MezzCharacterCreator } from "./character-creator.mjs";
 
 Handlebars.registerHelper("capitalize", s => s.charAt(0).toUpperCase() + s.slice(1));
 Handlebars.registerHelper("uppercase",  s => s.toUpperCase());
 Handlebars.registerHelper("signedInt",  n => n >= 0 ? `+${n}` : `${n}`);
-Handlebars.registerHelper("includesId", (arr, id) => arr?.some(e => e.id === id));
-Handlebars.registerHelper("gt", (a, b) => a > b);
-Handlebars.registerHelper("lt", (a, b) => a < b);
-Handlebars.registerHelper("add", (a, b) => a + b);
-Handlebars.registerHelper("sum", arr => arr.reduce((a, b) => a + b, 0));
-Handlebars.registerHelper("lt", (a, b) => a < b); // may already exist
-Handlebars.registerHelper("isDefined", v => v !== undefined && v !== null);
-// Add a button to the Actors Directory header
+Handlebars.registerHelper("isDefined",  v => v !== undefined && v !== null);
+Handlebars.registerHelper("add",  (a, b) => a + b);
+Handlebars.registerHelper("sum",  arr => arr.reduce((a, b) => a + b, 0));
+Handlebars.registerHelper("gt",   (a, b) => a > b);
+Handlebars.registerHelper("lt",   (a, b) => a < b);
+Handlebars.registerHelper("eq",   (a, b) => a === b);
 
 Hooks.on("renderActorDirectory", (app, html) => {
+  if (!game.user.can("ACTOR_CREATE")) return;
+  const $html = html instanceof jQuery ? html : $(html);
+  const $actions = $html.find(".directory-header .header-actions");
+  if (!$actions.length) return;
+  if ($actions.find(".mezz-create-char-btn").length) return;
   const $btn = $(`<button class="mezz-create-char-btn">
     <i class="fa-solid fa-user-plus"></i> New Character
   </button>`);
   $btn.on("click", () => new MezzCharacterCreator().render(true));
-  $(html).find(".directory-header .header-actions").prepend($btn);
+  $actions.prepend($btn);
 });
 
 Hooks.once("init", () => {

@@ -67,14 +67,33 @@ function _isNaturalWeapon(item) {
 }
 
 function _getPaperdollSlottedIds(actor) {
-  // New flag structure: flags.mezz-comp.slots
-  const newSlots = actor.flags?.[MODULE_ID]?.slots ?? {};
-  const ids = new Set(Object.values(newSlots).filter(Boolean));
+  // Items explicitly dragged into paperdoll equipment slots
+  const ids = new Set(Object.values(actor.flags?.[MODULE_ID]?.slots ?? {}).filter(Boolean));
 
-  // Also catch anything equipped in dnd5e that's in a paperdoll slot
-  // (belt, shoulder, etc. — anything with system.equipped = true)
-  for (const item of actor.items) {
-    if (item.system?.equipped) ids.add(item.id);
+  // Items assigned to ANY bg3-hud-core weapon set slot (all three sets, both hands).
+  // These show as hand slots on the paperdoll so must not appear in Loose.
+  // Skip isTwoHandedDuplicate entries — they reference the same underlying item.
+  const sets = actor.flags?.['bg3-hud-core']?.hudState?.weaponSets?.sets;
+  if (Array.isArray(sets)) {
+    for (const set of sets) {
+      for (const entry of Object.values(set?.items ?? {})) {
+        if (!entry || entry.isTwoHandedDuplicate) continue;
+        const uuid = typeof entry === 'string' ? entry : (entry.uuid ?? entry.id);
+        if (!uuid || typeof uuid !== 'string') continue;
+        const parts = uuid.split('.');
+        const itemId = parts[parts.length - 1];
+        if (itemId) ids.add(itemId);
+      }
+    }
+  }
+
+  // Also cover fvtt-paper-doll-ui hand slots if that module is in use
+  const pdSlots = actor.flags?.['fvtt-paper-doll-ui']?.slots ?? {};
+  for (const uuid of Object.values(pdSlots)) {
+    if (!uuid || typeof uuid !== 'string') continue;
+    const parts = uuid.split('.');
+    const itemId = parts[parts.length - 1];
+    if (itemId) ids.add(itemId);
   }
 
   return ids;
@@ -88,12 +107,14 @@ function _isListableItem(item) {
 
 /** Get items with no container (top-level inventory, not slotted in paperdoll) */
 function _getLooseItems(actor) {
-  const containerIds  = new Set(_getContainers(actor).map(c => c.id));
-  const slottedIds    = _getPaperdollSlottedIds(actor);
+  // Use ALL container IDs (including nested) so items inside nested containers
+  // don't incorrectly appear here as well as in their parent card.
+  const allContainerIds = new Set(_getAllContainers(actor).map(c => c.id));
+  const slottedIds      = _getPaperdollSlottedIds(actor);
   return actor.items.filter(i => {
     if (!_isListableItem(i)) return false;
     if (slottedIds.has(i.id)) return false;
-    const inContainer = i.system?.container && containerIds.has(i.system.container);
+    const inContainer = i.system?.container && allContainerIds.has(i.system.container);
     return !inContainer;
   });
 }
@@ -192,11 +213,15 @@ function _buildItemRow(item, actor, containerId) {
   row.draggable = true;
 
   const qty = item.system?.quantity ?? 1;
+  const equippedBadge = item.system?.equipped
+    ? `<span class="mezz-ct-tag mezz-ct-tag--equipped">Equipped</span>`
+    : '';
 
   row.innerHTML = `
     <img class="mezz-ct-item-img" src="${item.img}" title="${item.name}">
     <span class="mezz-ct-item-qty">${qty > 1 ? '×' + qty : ''}</span>
     <span class="mezz-ct-item-name">${item.name}</span>
+    ${equippedBadge}
     <span class="mezz-ct-tag ${_tagClass(item)}">${_typeTag(item)}</span>
     <span class="mezz-ct-item-wt">${_itemWeight(item)}</span>`;
 

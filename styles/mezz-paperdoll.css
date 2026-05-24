@@ -493,6 +493,7 @@
 .mezz-ct-tag--ammo      { background: rgba(90,60,10,0.5);  color: #d0a050; border: 1px solid rgba(120,80,15,0.6); }
 .mezz-ct-tag--magic     { background: rgba(60,30,120,0.5); color: #b090e0; border: 1px solid rgba(80,40,160,0.6); }
 .mezz-ct-tag--misc      { background: rgba(40,35,25,0.5);  color: #a09070; border: 1px solid rgba(60,50,30,0.6); }
+.mezz-ct-tag--equipped  { background: rgba(20,70,35,0.5);  color: #70d090; border: 1px solid rgba(30,110,55,0.6); }
 
 /* ─── Drop zones ─────────────────────────────────────────────────────────── */
 

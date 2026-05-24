@@ -51,20 +51,16 @@ function _getBg3ActiveSet(actor) {
 
 function _getBg3SetItem(actor, setIndex, hand) {
   const sets = actor.flags?.['bg3-hud-core']?.hudState?.weaponSets?.sets;
-  if (!sets) return null;
-  // BG3 HUD key format (confirmed from blade spell code):
-  // '<slotPosition>-<setIndex>' where slotPosition 0=main, 1=off
-  // e.g. set 0 main='0-0', set 0 off='1-0', set 1 main='0-1', set 1 off='1-1'
-  const slotPos = hand === 'main' ? '0' : '1';
-  const key      = slotPos + '-' + setIndex;
-  // Try sets[0].items first (primary storage), then sets[setIndex].items (fallback)
-  const items    = sets[0]?.items ?? sets[setIndex]?.items;
-  if (!items) return null;
-  const entry = items[key];
-  if (!entry) return null;
-  const uuid   = typeof entry === 'string' ? entry : (entry.uuid ?? entry.id ?? null);
-  if (!uuid) return null;
-  const parts  = uuid.split('.');
+  if (!sets?.[setIndex]) return null;
+  // bg3-hud-core key format: "col-row"
+  // col 0 = main hand (left slot), col 1 = off hand (right slot), row always 0
+  // Every set uses the same keys — items are stored per-set in sets[setIndex].items
+  const key   = (hand === 'main' ? '0' : '1') + '-0';
+  const entry = sets[setIndex].items?.[key];
+  if (!entry || entry.isTwoHandedDuplicate) return null;
+  const uuid  = typeof entry === 'string' ? entry : (entry.uuid ?? entry.id ?? null);
+  if (!uuid || typeof uuid !== 'string') return null;
+  const parts = uuid.split('.');
   return actor.items.get(parts[parts.length - 1]) ?? null;
 }
 
@@ -76,7 +72,7 @@ function _getBg3HandItem(actor, hand) {
   const pdSlots = actor.flags?.['fvtt-paper-doll-ui']?.slots;
   if (pdSlots) {
     const uuid = pdSlots[hand === 'main' ? 'MAIN_RIGHT.0' : 'OFFHAND_RIGHT.0'];
-    if (uuid) {
+    if (uuid && typeof uuid === 'string') {
       const parts = uuid.split('.');
       return actor.items.get(parts[parts.length - 1]) ?? null;
     }
@@ -87,21 +83,36 @@ function _getBg3HandItem(actor, hand) {
 // ─── BG3 HUD writing ─────────────────────────────────────────────────────────
 
 async function _writeBg3HudHand(actor, hand, item) {
-  const hudState  = foundry.utils.deepClone(actor.flags?.['bg3-hud-core']?.hudState ?? {});
+  const hudState = foundry.utils.deepClone(actor.flags?.['bg3-hud-core']?.hudState ?? {});
   if (!hudState.weaponSets) hudState.weaponSets = { activeSet: 0, sets: [] };
   const active = hudState.weaponSets.activeSet ?? 0;
-  while (hudState.weaponSets.sets.length <= active) {
-    hudState.weaponSets.sets.push({ items: {} });
-  }
-  // Write to sets[0].items with key '<slotPosition>-<setIndex>'
-  if (!hudState.weaponSets.sets[0]) hudState.weaponSets.sets[0] = { items: {} };
-  const set = hudState.weaponSets.sets[0];
-  if (!set.items) set.items = {};
-  const slotPos = hand === 'main' ? '0' : '1';
-  const key     = slotPos + '-' + active;
-  if (item) set.items[key] = item.uuid;
-  else      delete set.items[key];
 
+  // Ensure sets array is long enough
+  while (hudState.weaponSets.sets.length <= active) {
+    hudState.weaponSets.sets.push({ rows: 1, cols: 2, items: {} });
+  }
+
+  // Write to the ACTIVE set (not always sets[0])
+  const set = hudState.weaponSets.sets[active];
+  if (!set.items) set.items = {};
+
+  // bg3-hud-core key format: "col-row" — col 0=main, col 1=off, row always 0
+  const key = (hand === 'main' ? '0' : '1') + '-0';
+
+  if (item) {
+    // Store a full cell-data object (bare UUID strings are not recognised by bg3-hud-core)
+    set.items[key] = {
+      uuid: item.uuid,
+      name: item.name,
+      img:  item.img,
+      type: item.type,
+      uses: { value: 0, max: 0 },
+    };
+  } else {
+    delete set.items[key];
+  }
+
+  // Keep fvtt-paper-doll-ui in sync (used as a fallback read by some modules)
   const pdSlots = foundry.utils.deepClone(actor.flags?.['fvtt-paper-doll-ui']?.slots ?? {});
   const pdKey   = hand === 'main' ? 'MAIN_RIGHT.0' : 'OFFHAND_RIGHT.0';
   if (item) pdSlots[pdKey] = item.uuid;
@@ -480,6 +491,13 @@ function _refreshAllSlots(root, actor) {
   root.querySelectorAll('.mezz-ws-tab').forEach((btn, i) => {
     btn.classList.toggle('mezz-ws-tab--active', i === active);
   });
+  // Rebuild container doll icons — containers may have been added or removed
+  const bodyWrap = root.querySelector('.mezz-pd-body-wrap');
+  if (bodyWrap) {
+    for (const el of bodyWrap.querySelectorAll('.mezz-pd-slot--container')) el.remove();
+    const ctCol = root.querySelector('.mezz-pd-ct-col');
+    for (const el of _buildContainerDollSlots(actor, ctCol)) bodyWrap.appendChild(el);
+  }
 }
 
 // ─── Raw DOM popup ────────────────────────────────────────────────────────────
@@ -529,7 +547,8 @@ function _buildRawPopup(actor, anchorEl) {
 
   const ctCol = document.createElement('div');
   ctCol.className = 'mezz-pd-ct-col';
-  ctCol.appendChild(buildContainerPanel(actor));
+  try { ctCol.appendChild(buildContainerPanel(actor)); }
+  catch (err) { console.error('mezz-comp | buildContainerPanel failed', err); }
 
   const dollCol = document.createElement('div');
   dollCol.className = 'mezz-pd-doll-col';
@@ -599,7 +618,8 @@ function _buildSheetPanel(actor) {
 
   const ctCol = document.createElement('div');
   ctCol.className = 'mezz-pd-ct-col';
-  ctCol.appendChild(buildContainerPanel(actor));
+  try { ctCol.appendChild(buildContainerPanel(actor)); }
+  catch (err) { console.error('mezz-comp | buildContainerPanel failed', err); }
 
   const dollCol = document.createElement('div');
   dollCol.className = 'mezz-pd-doll-col';
@@ -671,13 +691,16 @@ Hooks.on('renderActorSheet',   (sheet, html) => {
   if (root) injectPaperdoll(sheet, root);
 });
 
-Hooks.on('updateActor', (actor) => {
+function _refreshForActor(actor) {
   const win = document.getElementById('mezz-paperdoll-win-' + actor.id);
   if (win) _refreshAllSlots(win, actor);
-});
+  // Also refresh the in-sheet paperdoll tab if it exists
+  for (const tab of document.querySelectorAll('section.mezz-pd-tab[data-mezz-actor="' + actor.id + '"]')) {
+    _refreshAllSlots(tab, actor);
+  }
+}
 
-Hooks.on('updateItem', (item) => {
-  if (!item.actor) return;
-  const win = document.getElementById('mezz-paperdoll-win-' + item.actor.id);
-  if (win) _refreshAllSlots(win, item.actor);
-});
+Hooks.on('updateActor', (actor) => _refreshForActor(actor));
+Hooks.on('updateItem',  (item)  => { if (item.actor) _refreshForActor(item.actor); });
+Hooks.on('createItem',  (item)  => { if (item.actor) _refreshForActor(item.actor); });
+Hooks.on('deleteItem',  (item)  => { if (item.actor) _refreshForActor(item.actor); });
