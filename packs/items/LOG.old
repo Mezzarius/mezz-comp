@@ -1,8 +1,0 @@
-2026/04/30-04:04:14.321413 7f44db7bf6c0 Recovering log #1457
-2026/04/30-04:04:14.366084 7f44db7bf6c0 Delete type=0 #1457
-2026/04/30-04:04:14.366137 7f44db7bf6c0 Delete type=3 #1455
-2026/05/02-17:33:18.207397 7f42327ff6c0 Level-0 table #1462: started
-2026/05/02-17:33:18.209356 7f42327ff6c0 Level-0 table #1462: 0 bytes OK
-2026/05/02-17:33:18.228828 7f42327ff6c0 Delete type=0 #1460
-2026/05/02-17:33:18.292761 7f42327ff6c0 Manual compaction at level-0 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)
-2026/05/02-17:33:18.301790 7f42327ff6c0 Manual compaction at level-1 from '!folders!0RguLlcgOhyGI6n0' @ 72057594037927935 : 1 .. '!items.effects!zQ1Bb1eRjWgA3GsN.waterBreathing00' @ 0 : 0; will stop at (end)

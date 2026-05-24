@@ -1,0 +1,249 @@
+<div class="mezz-creator-wrap">
+
+  {{!-- Step progress bar --}}
+  <nav class="mezz-creator-steps">
+    {{#each steps as |s i|}}
+      <div class="mezz-creator-step {{#if (eq i ../stepIndex)}}active{{/if}} {{#if (lt i ../stepIndex)}}done{{/if}}">
+        {{capitalize s}}
+      </div>
+    {{/each}}
+  </nav>
+
+  <div class="mezz-creator-body">
+
+    {{!-- NAME --}}
+    {{#if (eq step "name")}}
+      <h2>What is your character's name?</h2>
+      <input id="creator-name" type="text" placeholder="Enter name…" value="{{data.name}}" autofocus />
+
+    {{!-- ABILITIES --}}
+    {{else if (eq step "abilities")}}
+      <h2>Ability Scores</h2>
+      {{#unless data.abilityMethod}}
+        <div class="mezz-method-btns">
+          <button class="mezz-method-btn" data-method="pointbuy">Point Buy <small>(27 pts)</small></button>
+          <button class="mezz-method-btn" data-method="standard">Standard Array</button>
+          <button class="mezz-method-btn" data-method="roll">Roll (4d6 drop lowest)</button>
+        </div>
+      {{else}}
+        <div class="mezz-method-label">
+          Method: <b>{{data.abilityMethod}}</b>
+          <button class="mezz-method-change">Change</button>
+        </div>
+
+        {{!-- Point Buy --}}
+        {{#if (eq data.abilityMethod "pointbuy")}}
+          <div class="mezz-pb-points">Points remaining: <b>{{pointsLeft}}</b></div>
+          <div class="mezz-ability-grid">
+            {{#each abilityKeys as |key|}}
+              <div class="mezz-ability-row">
+                <label>{{lookup ../abilityLabels key}}</label>
+                <button class="mezz-pb-btn" data-key="{{key}}" data-dir="-1">−</button>
+                <span class="mezz-ability-val">{{lookup ../data.abilities key}}</span>
+                <button class="mezz-pb-btn" data-key="{{key}}" data-dir="1">+</button>
+              </div>
+            {{/each}}
+          </div>
+
+        {{!-- Standard Array --}}
+        {{else if (eq data.abilityMethod "standard")}}
+          <div class="mezz-ability-grid">
+            {{#each abilityKeys as |key|}}
+              <div class="mezz-ability-row">
+                <label>{{lookup ../abilityLabels key}}</label>
+                <select class="mezz-std-select" data-key="{{key}}">
+                  <option value="">—</option>
+                  {{#each ../standardArray as |v|}}
+                    <option value="{{v}}" {{#if (eq v (lookup ../../data.abilities key))}}selected{{/if}}>{{v}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            {{/each}}
+          </div>
+
+        {{!-- Roll --}}
+        {{else if (eq data.abilityMethod "roll")}}
+          <div class="mezz-rolled-scores">
+            {{#if (lt rollCount 3)}}
+              <button class="mezz-method-btn" data-method="roll">
+                Reroll <small>({{rollsRemaining}} left)</small>
+              </button>
+            {{else}}
+              <span style="color:#7a6a50;font-size:12px;">No rerolls remaining</span>
+            {{/if}}
+          </div>
+
+          {{!-- Show all roll sets as selectable rows --}}
+          {{#if (gt allRolls.length 1)}}
+            <div class="mezz-roll-sets">
+              <div class="mezz-equip-section-label">Choose a set:</div>
+              {{#each allRolls as |set i|}}
+                <div class="mezz-roll-set-btn {{#if (eq i ../selectedRollIdx)}}selected{{/if}}" data-idx="{{i}}">
+                  <span class="mezz-roll-set-label">Roll {{add i 1}}</span>
+                  {{#each set as |v|}}
+                    <span class="mezz-rolled-pip {{#if (eq ../i ../../selectedRollIdx)}}active{{/if}}">{{v}}</span>
+                  {{/each}}
+                  <span class="mezz-roll-set-total">= {{sum set}}</span>
+                </div>
+              {{/each}}
+            </div>
+          {{else}}
+            <div class="mezz-rolled-scores" style="margin-bottom:10px;">
+              {{#each data.rolledScores as |v|}}
+                <span class="mezz-rolled-pip">{{v}}</span>
+              {{/each}}
+            </div>
+          {{/if}}
+
+          {{!-- Assignment grid --}}
+          <div class="mezz-ability-grid">
+            {{#each abilityKeys as |key|}}
+              <div class="mezz-ability-row">
+                <label>{{lookup ../abilityLabels key}}</label>
+                <select class="mezz-roll-select" data-key="{{key}}">
+                  <option value="">—</option>
+                  {{#each ../data.rolledScores as |v i|}}
+                    <option value="{{i}}" {{#if (eq i (lookup ../../data.assignments key))}}selected{{/if}}>{{v}}</option>
+                  {{/each}}
+                </select>
+                <span class="mezz-ability-val">{{lookup ../data.abilities key}}</span>
+              </div>
+            {{/each}}
+          </div>
+        {{/if}}{{!-- end ability method if --}}
+      {{/unless}}{{!-- end unless abilityMethod --}}
+
+    {{!-- RACE --}}
+    {{else if (eq step "race")}}
+      <h2>Choose a Race</h2>
+      <div class="mezz-creator-grid">
+        {{#each races as |r|}}
+          <div class="mezz-creator-card {{#if (eq ../data.race.id r._id)}}selected{{/if}}"
+               data-field="race" data-id="{{r._id}}" data-name="{{r.name}}" data-pack="{{r.packId}}">
+            <img src="{{r.img}}" alt="{{r.name}}" />
+            <span>{{r.name}}</span>
+          </div>
+        {{/each}}
+      </div>
+
+    {{!-- BACKGROUND --}}
+    {{else if (eq step "background")}}
+      <h2>Choose a Background</h2>
+      <div class="mezz-creator-grid">
+        {{#each backgrounds as |b|}}
+          <div class="mezz-creator-card {{#if (eq ../data.background.id b._id)}}selected{{/if}}"
+               data-field="background" data-id="{{b._id}}" data-name="{{b.name}}" data-pack="{{b.packId}}">
+            <img src="{{b.img}}" alt="{{b.name}}" />
+            <span>{{b.name}}</span>
+          </div>
+        {{/each}}
+      </div>
+
+    {{!-- CLASS --}}
+    {{else if (eq step "class")}}
+      <h2>Choose a Class</h2>
+      <div class="mezz-creator-grid">
+        {{#each classes as |c|}}
+          <div class="mezz-creator-card {{#if (eq ../data.cls.id c._id)}}selected{{/if}}"
+               data-field="cls" data-id="{{c._id}}" data-name="{{c.name}}" data-pack="{{c.packId}}">
+            <img src="{{c.img}}" alt="{{c.name}}" />
+            <span>{{c.name}}</span>
+          </div>
+        {{/each}}
+      </div>
+
+    {{!-- EQUIPMENT --}}
+    {{else if (eq step "equipment")}}
+      <h2>Starting Equipment</h2>
+
+      {{#if equipmentGrants.length}}
+        <div class="mezz-equip-section-label">You receive:</div>
+        <div class="mezz-equip-list">
+          {{#each equipmentGrants as |g|}}
+            <div class="mezz-equip-row mezz-equip-granted">
+              <img src="{{g.img}}" alt="{{g.name}}" />
+              <span>{{#if (gt g.count 1)}}{{g.count}}× {{/if}}{{g.name}}</span>
+              <i class="fa-solid fa-check mezz-equip-granted-icon"></i>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if hasCurrency}}
+        <div class="mezz-equip-section-label" style="margin-top:14px;">Starting Gold:</div>
+        <div class="mezz-equip-row mezz-equip-granted">
+          <i class="fa-solid fa-coins" style="color:#ffd700;font-size:20px;"></i>
+          <span>
+            {{#each equipmentCurrency}}
+              {{this}} {{@key}}{{#unless @last}}, {{/unless}}
+            {{/each}}
+          </span>
+          <i class="fa-solid fa-check mezz-equip-granted-icon"></i>
+        </div>
+      {{/if}}
+      {{#if equipmentChoices.length}}
+        <div class="mezz-equip-section-label" style="margin-top:14px;">Choose one from each:</div>
+        {{#each equipmentChoices as |choice i|}}
+          <div class="mezz-ability-row" style="margin-bottom:8px;">
+            <label>Option {{add i 1}}</label>
+            <select class="mezz-equip-choice" data-idx="{{i}}">
+              <option value="">— Choose —</option>
+              {{#each choice.options as |opt|}}
+                <option value="{{opt.uuid}}" {{#if (eq opt.uuid ../choice.selected)}}selected{{/if}}>
+                  {{#if (gt opt.count 1)}}{{opt.count}}× {{/if}}{{opt.name}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
+        {{/each}}
+      {{/if}}
+      {{#unless equipmentGrants.length}}
+        {{#unless equipmentChoices.length}}
+          <p style="color:#7a6a50;">No starting equipment defined for this class.</p>
+        {{/unless}}
+      {{/unless}}
+
+    {{!-- CONFIRM --}}
+    {{else if (eq step "confirm")}}
+      <h2>Ready to Create</h2>
+      <div class="mezz-confirm-grid">
+        <div class="mezz-confirm-row"><b>Name</b><span>{{data.name}}</span></div>
+        <div class="mezz-confirm-row"><b>Race</b><span>{{data.race.name}}</span></div>
+        <div class="mezz-confirm-row"><b>Class</b><span>{{data.cls.name}}</span></div>
+        <div class="mezz-confirm-row"><b>Background</b><span>{{data.background.name}}</span></div>
+        <div class="mezz-confirm-row">
+          <b>Abilities</b>
+          <span>
+            {{#each abilityKeys as |k|}}
+              {{uppercase k}} {{lookup ../data.abilities k}} ({{signedInt (lookup ../abilityMods k)}}){{#unless @last}} &nbsp;{{/unless}}
+            {{/each}}
+          </span>
+        </div>
+        <div class="mezz-confirm-row">
+          <b>Equipment</b>
+          <span>
+            {{#if equipmentNames.length}}
+              {{#each equipmentNames as |n|}}{{n}}{{#unless @last}}, {{/unless}}{{/each}}
+            {{else}}
+              None
+            {{/if}}
+          </span>
+        </div>
+      </div>
+    {{/if}}{{!-- end step --}}
+
+  </div>{{!-- /body --}}
+
+  {{!-- Footer nav --}}
+  <div class="mezz-creator-footer">
+    {{#if (gt stepIndex 0)}}
+      <button class="mezz-creator-back"><i class="fa-solid fa-arrow-left"></i> Back</button>
+    {{/if}}
+    <div class="mezz-creator-spacer"></div>
+    {{#if (eq step "confirm")}}
+      <button class="mezz-creator-finish"><i class="fa-solid fa-user-plus"></i> Create Character</button>
+    {{else}}
+      <button class="mezz-creator-next">Next <i class="fa-solid fa-arrow-right"></i></button>
+    {{/if}}
+  </div>
+
+</div>
