@@ -154,13 +154,18 @@ export async function handleProjectile(workflow){
 	if (!projectile) return;
 
 	if (type === "thrown") {
-		const qty = weapon.system.quantity ?? 1;
-		if (qty > 1) {
-          await weapon.update({ "system.quantity": qty - 1 });
-		} else {
-    	  await weapon.delete();
-	    }
+      // Weapons with the Returning property fly back — don't remove or embed them
+      const props = weapon.system.properties;
+      const isReturning = props?.has?.('ret') || props?.ret || false;
+      if (isReturning) return;
+
+      const qty = weapon.system.quantity ?? 1;
+      if (qty > 1) {
+        await weapon.update({ "system.quantity": qty - 1 });
+      } else {
+        await weapon.delete();
       }
+    }
 
     if (hitTargets.size === 0) {
       const attackerToken = workflow.token;
